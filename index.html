@@ -233,6 +233,13 @@
   .tc-cal-cell.sel .tc-cal-dot{ background:var(--paper-card); }
   .tc-cal-detail{ margin-top:16px; border-top:1px solid var(--line); padding-top:12px; }
   .tc-cal-detail-title{ font-family:'Times New Roman', Times, serif; font-size:13px; margin-bottom:8px; color:var(--ink); }
+  .tc-daily-heading{ font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--ink); margin:16px 0 8px; text-align:left; }
+  .tc-summary-table{ width:100%; border-collapse:collapse; font-size:13px; }
+  .tc-summary-table th{ text-align:left; font-weight:500; color:var(--graphite); padding:6px 8px; border-bottom:1px solid var(--line); font-size:11px; text-transform:uppercase; letter-spacing:0.5px; }
+  .tc-summary-table td{ padding:9px 8px; border-bottom:1px dashed var(--line); color:var(--ink); }
+  .tc-summary-table th:last-child, .tc-summary-table td:last-child{ text-align:right; }
+  .tc-summary-table tr:last-child td{ border-bottom:none; }
+  .tc-summary-total td{ font-weight:700; border-top:1px solid var(--ink); border-bottom:none; }
   .pending-text{ color:var(--graphite); font-style:italic; }
   .tc-tone-picker{ display:flex; gap:6px; justify-content:flex-end; margin-top:6px; }
   .tc-tone-dot{
@@ -904,15 +911,30 @@
     return parts.length ? parts.join(', ') : '–';
   }
 
+  function fmtHoursMinutes(mins){
+    var h = Math.floor(mins / 60), m = mins % 60;
+    if (h > 0 && m > 0) return h + ' hr ' + m + ' min';
+    if (h > 0) return h + ' hr';
+    return m + ' min';
+  }
+
   async function renderDayDetail(key){
     var detail = document.getElementById('tc-cal-detail');
     detail.innerHTML = '<div class="tc-empty">Loading…</div>';
     var events = [];
+    var entries = [];
     if (key === todayStr()) {
       events = todayEvents;
+      entries = todayEntries;
     } else {
       var raw = await safeGet('day:'+key, false);
-      if (raw) { try { events = JSON.parse(raw).events || []; } catch(e){} }
+      if (raw) {
+        try {
+          var parsed = JSON.parse(raw);
+          events = parsed.events || [];
+          entries = parsed.entries || [];
+        } catch(e){}
+      }
     }
     var d = new Date(key + 'T00:00:00');
     detail.innerHTML = '';
@@ -928,6 +950,12 @@
       detail.appendChild(empty);
       return;
     }
+
+    var recordHeading = document.createElement('div');
+    recordHeading.className = 'tc-daily-heading';
+    recordHeading.textContent = 'Daily Record';
+    detail.appendChild(recordHeading);
+
     var table = document.createElement('table');
     table.className = 'tc-day-table';
     var rows = sessions.map(function(s){
@@ -944,6 +972,33 @@
     table.innerHTML = '<thead><tr><th>Category</th><th>Task</th><th>Clocked in</th><th>Break</th><th>Clocked out</th></tr></thead>'+
       '<tbody>'+rows+'</tbody>';
     detail.appendChild(table);
+
+    if (entries.length) {
+      var summaryHeading = document.createElement('div');
+      summaryHeading.className = 'tc-daily-heading';
+      summaryHeading.textContent = 'Daily Summary';
+      detail.appendChild(summaryHeading);
+
+      var order = [];
+      var totals = {};
+      var grandTotal = 0;
+      entries.forEach(function(e){
+        var label = (e.task && e.task.trim()) ? e.task.trim() : e.category;
+        if (!(label in totals)) { totals[label] = 0; order.push(label); }
+        totals[label] += e.minutes;
+        grandTotal += e.minutes;
+      });
+
+      var summaryTable = document.createElement('table');
+      summaryTable.className = 'tc-summary-table';
+      var summaryRows = order.map(function(label){
+        return '<tr><td>'+label+'</td><td>'+fmtHoursMinutes(totals[label])+'</td></tr>';
+      }).join('');
+      summaryRows += '<tr class="tc-summary-total"><td>Total</td><td>'+fmtHoursMinutes(grandTotal)+'</td></tr>';
+      summaryTable.innerHTML = '<thead><tr><th>Task</th><th>Total Time</th></tr></thead>'+
+        '<tbody>'+summaryRows+'</tbody>';
+      detail.appendChild(summaryTable);
+    }
   }
 
   function renderCalendar(){
