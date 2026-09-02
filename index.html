@@ -366,7 +366,8 @@
   .tc-auth-title{ font-size:13px; letter-spacing:2px; text-transform:uppercase; border:2px solid #000; display:inline-block; padding:3px 10px; border-radius:3px; margin-bottom:28px; }
   .tc-auth-card input{ width:100%; font-family:'Times New Roman', Times, serif; font-size:14px; padding:11px 14px; border:1px solid #CCC; border-radius:8px; margin-bottom:10px; box-sizing:border-box; }
   .tc-auth-card button{ width:100%; font-family:'Times New Roman', Times, serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; padding:12px; border:none; border-radius:8px; background:#000; color:#fff; cursor:pointer; margin-top:6px; }
-  .tc-auth-error{ color:#B00020; font-size:12px; min-height:16px; margin-top:8px; }
+  .tc-auth-error{ font-size:12px; min-height:16px; margin-top:8px; }
+  .tc-auth-forgot{ text-align:right; font-size:11px; color:#555; text-decoration:underline; cursor:pointer; margin:-2px 0 10px; }
   .tc-auth-toggle{ font-size:12px; color:#555; margin-top:18px; }
   .tc-auth-toggle span{ text-decoration:underline; cursor:pointer; color:#000; }
   .tc-signout-row{ display:flex; justify-content:flex-end; margin-bottom:12px; flex-shrink:0; }
@@ -383,6 +384,7 @@
     <div class="tc-auth-title">JiShift</div>
     <input type="email" id="tc-auth-email" placeholder="Email" autocomplete="email">
     <input type="password" id="tc-auth-password" placeholder="Password" autocomplete="current-password">
+    <div class="tc-auth-forgot" id="tc-auth-forgot">Forgot password?</div>
     <button id="tc-auth-submit" type="button">Log in</button>
     <div class="tc-auth-error" id="tc-auth-error"></div>
     <div class="tc-auth-toggle">
@@ -1254,7 +1256,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  onAuthStateChanged, signOut
+  onAuthStateChanged, signOut, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query,
@@ -1312,8 +1314,10 @@ function showApp(){
   document.getElementById('tc-auth-screen').style.display = 'none';
   document.getElementById('tc-root').style.display = 'flex';
 }
-function showError(msg){
-  document.getElementById('tc-auth-error').textContent = msg || '';
+function showMessage(msg, isError){
+  var el = document.getElementById('tc-auth-error');
+  el.textContent = msg || '';
+  el.style.color = isError === false ? '#0A7D3C' : '#B00020';
 }
 
 onAuthStateChanged(auth, function(user){
@@ -1331,14 +1335,26 @@ document.getElementById('tc-auth-toggle-link').onclick = function(){
   document.getElementById('tc-auth-submit').textContent = isSignupMode ? 'Sign up' : 'Log in';
   document.getElementById('tc-auth-mode-text').textContent = isSignupMode ? 'Already have an account?' : "Don't have an account?";
   document.getElementById('tc-auth-toggle-link').textContent = isSignupMode ? 'Log in' : 'Sign up';
-  showError('');
+  document.getElementById('tc-auth-forgot').style.display = isSignupMode ? 'none' : 'block';
+  showMessage('');
+};
+
+document.getElementById('tc-auth-forgot').onclick = async function(){
+  var email = document.getElementById('tc-auth-email').value.trim();
+  if (!email) { showMessage('Enter your email above first, then click this again.'); return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showMessage('Reset email sent to ' + email + ' — check your inbox.', false);
+  } catch (e) {
+    showMessage((e.message || 'Something went wrong.').replace('Firebase: ', ''));
+  }
 };
 
 document.getElementById('tc-auth-submit').onclick = async function(){
   var email = document.getElementById('tc-auth-email').value.trim();
   var password = document.getElementById('tc-auth-password').value;
-  showError('');
-  if (!email || !password) { showError('Enter an email and password.'); return; }
+  showMessage('');
+  if (!email || !password) { showMessage('Enter an email and password.'); return; }
   try {
     if (isSignupMode) {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -1346,7 +1362,7 @@ document.getElementById('tc-auth-submit').onclick = async function(){
       await signInWithEmailAndPassword(auth, email, password);
     }
   } catch (e) {
-    showError((e.message || 'Something went wrong.').replace('Firebase: ', ''));
+    showMessage((e.message || 'Something went wrong.').replace('Firebase: ', ''));
   }
 };
 
