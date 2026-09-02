@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JiShift</title>
 <style>
   :root{
     --paper:#FFFFFF;
@@ -22,6 +28,7 @@
     min-height:100vh;
     display:flex;
     flex-direction:column;
+    position:relative;
   }
   .tc-stamp-title{
     font-family:'Times New Roman', Times, serif;
@@ -272,6 +279,7 @@
   #tc-root.tc-focus .tc-main-nav,
   #tc-root.tc-focus .tc-header-left,
   #tc-root.tc-focus .tc-date,
+  #tc-root.tc-focus .tc-signout-row,
   #tc-root.tc-focus .tc-tone-picker{ display:none; }
   #tc-root.tc-focus #tc-view-clock{ position:fixed; inset:0; z-index:900; background:var(--paper); display:flex; flex-direction:column; }
   #tc-root.tc-focus .tc-header{ flex-shrink:0; }
@@ -348,9 +356,44 @@
     #tc-root.tc-focus .tc-punch-btn{ font-size:12px; padding:13px 8px; }
     #tc-root.tc-focus #tc-timecard-toggle{ top:12px; right:12px; font-size:9px; }
   }
-</style>
 
-<div id="tc-root">
+  #tc-auth-screen{
+    font-family:'Times New Roman', Times, serif;
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:#FFFFFF; padding:24px;
+  }
+  .tc-auth-card{ width:100%; max-width:360px; text-align:center; }
+  .tc-auth-title{ font-size:13px; letter-spacing:2px; text-transform:uppercase; border:2px solid #000; display:inline-block; padding:3px 10px; border-radius:3px; margin-bottom:28px; }
+  .tc-auth-card input{ width:100%; font-family:'Times New Roman', Times, serif; font-size:14px; padding:11px 14px; border:1px solid #CCC; border-radius:8px; margin-bottom:10px; box-sizing:border-box; }
+  .tc-auth-card button{ width:100%; font-family:'Times New Roman', Times, serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; padding:12px; border:none; border-radius:8px; background:#000; color:#fff; cursor:pointer; margin-top:6px; }
+  .tc-auth-error{ color:#B00020; font-size:12px; min-height:16px; margin-top:8px; }
+  .tc-auth-toggle{ font-size:12px; color:#555; margin-top:18px; }
+  .tc-auth-toggle span{ text-decoration:underline; cursor:pointer; color:#000; }
+  .tc-signout-row{ display:flex; justify-content:flex-end; margin-bottom:12px; flex-shrink:0; }
+  #tc-signout-btn{
+    font-family:'Times New Roman', Times, serif; font-size:10px; letter-spacing:0.5px; text-transform:uppercase;
+    background:#fff; border:1px solid var(--line); border-radius:14px; padding:5px 12px; cursor:pointer; color:var(--graphite);
+  }
+</style>
+</head>
+<body>
+
+<div id="tc-auth-screen">
+  <div class="tc-auth-card">
+    <div class="tc-auth-title">JiShift</div>
+    <input type="email" id="tc-auth-email" placeholder="Email" autocomplete="email">
+    <input type="password" id="tc-auth-password" placeholder="Password" autocomplete="current-password">
+    <button id="tc-auth-submit" type="button">Log in</button>
+    <div class="tc-auth-error" id="tc-auth-error"></div>
+    <div class="tc-auth-toggle">
+      <span id="tc-auth-mode-text">Don't have an account?</span>
+      <span id="tc-auth-toggle-link">Sign up</span>
+    </div>
+  </div>
+</div>
+
+<div id="tc-root" style="display:none;">
+  <div class="tc-signout-row"><button id="tc-signout-btn" type="button">Sign out</button></div>
   <h2 class="sr-only">Career time clock: clock in and out by identity role and task, track attendance, and review performance reports.</h2>
 
   <div class="tc-main-nav">
@@ -363,7 +406,7 @@
       <div class="tc-header-left">
         <div class="tc-identity" id="tc-identity"></div>
       </div>
-      <div class="tc-stamp-title" id="tc-timecard-toggle">Time card</div>
+      <div class="tc-stamp-title" id="tc-timecard-toggle">JiShift</div>
       <div class="tc-date" id="tc-date"></div>
       <div class="tc-tone-picker" id="tc-tone-picker" style="position:absolute; top:56px; right:0;"></div>
     </div>
@@ -1203,6 +1246,113 @@
     if (meta.activeSession) startTicking();
   }
 
-  init();
+  window.appInit = init;
 })();
 </script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query,
+  orderBy, startAt, endAt, getDocs, documentId
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+// ============================================================
+// PASTE YOUR OWN CONFIG HERE — from Firebase console:
+// Project settings (gear icon) > Your apps > web app > SDK setup and config
+// The app will not work until this placeholder is replaced.
+// ============================================================
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+var isSignupMode = false;
+
+function setupStorageShim(uid){
+  window.storage = {
+    get: async function(key){
+      var snap = await getDoc(doc(db, 'users', uid, 'kv', key));
+      return snap.exists() ? { key: key, value: snap.data().value } : null;
+    },
+    set: async function(key, value){
+      await setDoc(doc(db, 'users', uid, 'kv', key), { value: value, updatedAt: Date.now() });
+      return { key: key, value: value };
+    },
+    list: async function(prefix){
+      var p = prefix || '';
+      var q = query(collection(db, 'users', uid, 'kv'), orderBy(documentId()), startAt(p), endAt(p + '\uf8ff'));
+      var snap = await getDocs(q);
+      return { keys: snap.docs.map(function(d){ return d.id; }) };
+    },
+    delete: async function(key){
+      await deleteDoc(doc(db, 'users', uid, 'kv', key));
+      return { key: key, deleted: true };
+    }
+  };
+}
+
+function showAuthScreen(){
+  document.getElementById('tc-auth-screen').style.display = 'flex';
+  document.getElementById('tc-root').style.display = 'none';
+}
+function showApp(){
+  document.getElementById('tc-auth-screen').style.display = 'none';
+  document.getElementById('tc-root').style.display = 'flex';
+}
+function showError(msg){
+  document.getElementById('tc-auth-error').textContent = msg || '';
+}
+
+onAuthStateChanged(auth, function(user){
+  if (user) {
+    setupStorageShim(user.uid);
+    showApp();
+    if (window.appInit) window.appInit();
+  } else {
+    showAuthScreen();
+  }
+});
+
+document.getElementById('tc-auth-toggle-link').onclick = function(){
+  isSignupMode = !isSignupMode;
+  document.getElementById('tc-auth-submit').textContent = isSignupMode ? 'Sign up' : 'Log in';
+  document.getElementById('tc-auth-mode-text').textContent = isSignupMode ? 'Already have an account?' : "Don't have an account?";
+  document.getElementById('tc-auth-toggle-link').textContent = isSignupMode ? 'Log in' : 'Sign up';
+  showError('');
+};
+
+document.getElementById('tc-auth-submit').onclick = async function(){
+  var email = document.getElementById('tc-auth-email').value.trim();
+  var password = document.getElementById('tc-auth-password').value;
+  showError('');
+  if (!email || !password) { showError('Enter an email and password.'); return; }
+  try {
+    if (isSignupMode) {
+      await createUserWithEmailAndPassword(auth, email, password);
+    } else {
+      await signInWithEmailAndPassword(auth, email, password);
+    }
+  } catch (e) {
+    showError((e.message || 'Something went wrong.').replace('Firebase: ', ''));
+  }
+};
+
+document.getElementById('tc-signout-btn').onclick = function(){
+  signOut(auth);
+};
+</script>
+</body>
+</html>
