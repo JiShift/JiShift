@@ -173,6 +173,19 @@
   .tc-row .cat{ font-weight:500; }
   .tc-row .time{ font-family:'Times New Roman', Times, serif; color:var(--graphite); }
   .tc-empty{ text-align:center; color:var(--graphite); font-size:13px; padding:20px 0; }
+  .tc-tracker-section{ margin-bottom:26px; }
+  .tc-tracker-section-title{ font-size:15px; font-weight:700; margin-bottom:10px; }
+  .tc-tracker-row{ display:flex; align-items:center; gap:10px; padding:10px 4px; border-bottom:1px dashed var(--line); cursor:pointer; }
+  .tc-tracker-row:hover{ background:var(--paper-card); }
+  .tc-tracker-num{ width:20px; height:20px; border-radius:50%; border:1px solid var(--ink); display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; }
+  .tc-tracker-name{ flex:1; font-size:14px; }
+  .tc-tracker-row-remove{ flex-shrink:0; width:20px; height:20px; border-radius:50%; border:none; background:none; color:var(--graphite); font-size:13px; cursor:pointer; }
+  .tc-tracker-row-remove:hover{ background:#fff; color:var(--punch); }
+  .tc-tracker-add{ display:flex; align-items:center; gap:8px; padding:10px 4px; color:var(--graphite); cursor:pointer; font-size:13px; }
+  .tc-tracker-add:hover{ color:var(--ink); }
+  .tc-tracker-back{ font-size:12px; text-decoration:underline; cursor:pointer; color:var(--graphite); margin-bottom:14px; display:inline-block; }
+  .tc-tracker-title{ font-size:16px; font-weight:700; text-align:center; }
+  .tc-tracker-subtitle{ font-size:12px; font-style:italic; color:var(--graphite); text-align:center; margin-bottom:14px; }
   .tc-habit-card{ border:1px solid var(--line); border-radius:10px; padding:18px; margin-bottom:20px; }
   .tc-habit-header{ margin-bottom:14px; position:relative; }
   .tc-habit-field{ font-size:13px; color:var(--graphite); margin-bottom:4px; cursor:pointer; }
@@ -449,7 +462,7 @@
   <div id="tc-view-records" style="display:none;">
     <div class="tc-tabs">
       <div class="tc-tab sel" data-tab="log">Attendance</div>
-      <div class="tc-tab" data-tab="habits">Habits</div>
+      <div class="tc-tab" data-tab="habits">Tracker</div>
       <div class="tc-tab" data-tab="week">Performance Report</div>
       <div class="tc-tab" data-tab="timeline">Timeline</div>
     </div>
@@ -971,19 +984,63 @@
     }
   }
 
-  var HABIT_PHASES = [
-    { cls: 'phase1', start: 1, end: 3, label: 'Phase 1 · 3 Days', msg: "Good job! You've got the hardest part!" },
-    { cls: 'phase2', start: 4, end: 21, label: 'Phase 2 · 3 Weeks', msg: "Keep going! You're already building momentum!" },
-    { cls: 'phase3', start: 22, end: 90, label: 'Phase 3 · 3 Months', msg: 'Congrats! This habit is part of your identity now!' }
+  var TRACKER_TYPES = {
+    habit: {
+      key: 'habit',
+      listLabel: 'Habits Tracker',
+      title: 'Habit Tracker',
+      subtitle: null,
+      nameField: 'identity',
+      fields: [
+        { key: 'startDate', label: 'Start date' },
+        { key: 'identity', label: "Identity you're trying to build" }
+      ],
+      phaseMsgs: [
+        "Good job! You've got the hardest part!",
+        "Keep going! You're already building momentum!",
+        "Congrats! This habit is part of your identity now!"
+      ],
+      reflectTitle: 'Self-Reflections After',
+      questions: [
+        "What was the most challenging part of turning this habit into your identity?",
+        "What adjustments did you make to conquer this?",
+        "What would tempt you to slip back into old patterns, and how will you handle it?",
+        "How do you feel now compared to day one?"
+      ]
+    },
+    addiction: {
+      key: 'addiction',
+      listLabel: 'Addiction Tracker',
+      title: 'Addiction Tracker',
+      subtitle: 'Tracking every day since you quit',
+      nameField: 'outgrowingFor',
+      fields: [
+        { key: 'quitDate', label: 'Quit date' },
+        { key: 'outgrowingFor', label: "Who you're outgrowing this for" }
+      ],
+      phaseMsgs: [
+        "You made it through the hardest pull to let go.",
+        "You're proving you don't need it anymore.",
+        "This is no longer who you are."
+      ],
+      reflectTitle: 'Reflections While Unlearning This',
+      questions: [
+        "What did this addiction give you that you're learning to find elsewhere?",
+        "What triggers used to pull you back in, and how did you move through them?",
+        "What would tempt you to relapse, and how will you protect yourself?",
+        "Who are you now that you're outgrowing this part of yourself?"
+      ]
+    }
+  };
+  var HABIT_PHASE_RANGES = [
+    { cls: 'phase1', start: 1, end: 3, label: 'Phase 1 · 3 Days' },
+    { cls: 'phase2', start: 4, end: 21, label: 'Phase 2 · 3 Weeks' },
+    { cls: 'phase3', start: 22, end: 90, label: 'Phase 3 · 3 Months' }
   ];
-  var HABIT_QUESTIONS = [
-    { key: 'q1', text: 'What was the most challenging part of turning this habit into your identity?' },
-    { key: 'q2', text: 'What adjustments did you make to conquer this?' },
-    { key: 'q3', text: 'What would tempt you to slip back into old patterns, and how will you handle it?' },
-    { key: 'q4', text: 'How do you feel now compared to day one?' }
-  ];
+  var trackerView = { mode: 'list', id: null };
 
   function migrateHabit(h){
+    if (!h.type) h.type = 'habit';
     if (!h.days) {
       h.identity = h.identity || h.name || 'New habit';
       h.startDate = h.startDate || todayStr();
@@ -996,13 +1053,12 @@
   }
 
   async function editHabitField(h, field, label){
-    var current = field === 'identity' ? h.identity : h.startDate;
+    var current = h[field] || '';
     var val = prompt(label, current);
     if (val === null) return;
     val = val.trim();
     if (!val) return;
-    if (field === 'identity') h.identity = val;
-    else h.startDate = val;
+    h[field] = val;
     await saveMeta();
     renderHabits();
   }
@@ -1028,7 +1084,25 @@
     return wrap;
   }
 
-  function renderHabitCard(h){
+  function renderTrackerDetail(panel, h){
+    var cfg = TRACKER_TYPES[h.type];
+    var back = document.createElement('div');
+    back.className = 'tc-tracker-back';
+    back.textContent = '‹ Back to Tracker';
+    back.onclick = function(){ trackerView = { mode: 'list', id: null }; renderHabits(); };
+    panel.appendChild(back);
+
+    var title = document.createElement('div');
+    title.className = 'tc-tracker-title';
+    title.textContent = cfg.title;
+    panel.appendChild(title);
+    if (cfg.subtitle) {
+      var sub = document.createElement('div');
+      sub.className = 'tc-tracker-subtitle';
+      sub.textContent = cfg.subtitle;
+      panel.appendChild(sub);
+    }
+
     var card = document.createElement('div');
     card.className = 'tc-habit-card';
 
@@ -1050,22 +1124,20 @@
       }
       meta.habits = meta.habits.filter(function(x){ return x.id !== h.id; });
       await saveMeta();
+      trackerView = { mode: 'list', id: null };
       renderHabits();
     };
-    var identityField = document.createElement('div');
-    identityField.className = 'tc-habit-field';
-    identityField.innerHTML = 'Identity you\'re trying to build: <b>' + h.identity + '</b>';
-    identityField.onclick = function(){ editHabitField(h, 'identity', "Identity you're trying to build"); };
-    var dateField = document.createElement('div');
-    dateField.className = 'tc-habit-field';
-    dateField.innerHTML = 'Start date: <b>' + h.startDate + '</b>';
-    dateField.onclick = function(){ editHabitField(h, 'startDate', 'Start date (YYYY-MM-DD)'); };
     header.appendChild(removeBtn);
-    header.appendChild(identityField);
-    header.appendChild(dateField);
+    cfg.fields.forEach(function(f){
+      var fieldEl = document.createElement('div');
+      fieldEl.className = 'tc-habit-field';
+      fieldEl.innerHTML = f.label + ': <b>' + (h[f.key] || '') + '</b>';
+      fieldEl.onclick = function(){ editHabitField(h, f.key, f.label); };
+      header.appendChild(fieldEl);
+    });
     card.appendChild(header);
 
-    HABIT_PHASES.forEach(function(phase){
+    HABIT_PHASE_RANGES.forEach(function(phase, i){
       var label = document.createElement('div');
       label.className = 'tc-habit-phase-label';
       label.textContent = phase.label;
@@ -1073,7 +1145,7 @@
       card.appendChild(renderHabitGrid(h, phase));
       var msg = document.createElement('div');
       msg.className = 'tc-habit-msg';
-      msg.textContent = phase.msg;
+      msg.textContent = cfg.phaseMsgs[i];
       card.appendChild(msg);
     });
 
@@ -1081,69 +1153,102 @@
     reflect.className = 'tc-habit-reflect';
     var reflectTitle = document.createElement('div');
     reflectTitle.className = 'tc-habit-reflect-title';
-    reflectTitle.textContent = 'Self-Reflections After';
+    reflectTitle.textContent = cfg.reflectTitle;
     reflect.appendChild(reflectTitle);
-    HABIT_QUESTIONS.forEach(function(q){
+    cfg.questions.forEach(function(qText, qi){
+      var qKey = 'q' + (qi + 1);
       var qEl = document.createElement('div');
       qEl.className = 'tc-habit-q';
-      qEl.textContent = q.text;
+      qEl.textContent = qText;
       var aEl = document.createElement('textarea');
       aEl.className = 'tc-habit-a';
       aEl.rows = 2;
-      aEl.value = h.reflections[q.key] || '';
+      aEl.value = h.reflections[qKey] || '';
       aEl.onblur = async function(){
-        h.reflections[q.key] = aEl.value;
+        h.reflections[qKey] = aEl.value;
         await saveMeta();
       };
       reflect.appendChild(qEl);
       reflect.appendChild(aEl);
     });
     card.appendChild(reflect);
+    panel.appendChild(card);
+  }
 
-    return card;
+  function renderTrackerList(panel){
+    ['habit', 'addiction'].forEach(function(typeKey){
+      var cfg = TRACKER_TYPES[typeKey];
+      var items = meta.habits.filter(function(h){ return h.type === typeKey; });
+      var section = document.createElement('div');
+      section.className = 'tc-tracker-section';
+      var sectionTitle = document.createElement('div');
+      sectionTitle.className = 'tc-tracker-section-title';
+      sectionTitle.textContent = cfg.listLabel;
+      section.appendChild(sectionTitle);
+
+      items.forEach(function(h, i){
+        var row = document.createElement('div');
+        row.className = 'tc-tracker-row';
+        var num = document.createElement('div');
+        num.className = 'tc-tracker-num';
+        num.textContent = i + 1;
+        var name = document.createElement('div');
+        name.className = 'tc-tracker-name';
+        name.textContent = h[cfg.nameField] || ('Tracker ' + (i + 1));
+        var removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'tc-tracker-row-remove';
+        removeBtn.textContent = '\u00d7';
+        removeBtn.onclick = async function(e){
+          e.stopPropagation();
+          if (removeBtn.getAttribute('data-confirm') !== '1') {
+            removeBtn.setAttribute('data-confirm', '1');
+            removeBtn.textContent = '\u2713';
+            setTimeout(function(){
+              if (removeBtn.isConnected) { removeBtn.setAttribute('data-confirm', '0'); removeBtn.textContent = '\u00d7'; }
+            }, 2500);
+            return;
+          }
+          meta.habits = meta.habits.filter(function(x){ return x.id !== h.id; });
+          await saveMeta();
+          renderHabits();
+        };
+        row.appendChild(num); row.appendChild(name); row.appendChild(removeBtn);
+        row.onclick = function(){ trackerView = { mode: 'detail', id: h.id }; renderHabits(); };
+        section.appendChild(row);
+      });
+
+      var addRow = document.createElement('div');
+      addRow.className = 'tc-tracker-add';
+      addRow.textContent = '+ Add ' + (typeKey === 'habit' ? 'habit' : 'addiction') + ' tracker';
+      addRow.onclick = async function(){
+        var newTracker = {
+          id: 't' + Date.now(),
+          type: typeKey,
+          days: new Array(90).fill(false),
+          reflections: { q1:'', q2:'', q3:'', q4:'' }
+        };
+        cfg.fields.forEach(function(f){ newTracker[f.key] = ''; });
+        meta.habits.push(newTracker);
+        await saveMeta();
+        trackerView = { mode: 'detail', id: newTracker.id };
+        renderHabits();
+      };
+      section.appendChild(addRow);
+      panel.appendChild(section);
+    });
   }
 
   function renderHabits(){
     var panel = document.getElementById('tc-panel-habits');
     panel.innerHTML = '';
     meta.habits.forEach(migrateHabit);
-    if (!meta.habits.length) {
-      var empty = document.createElement('div');
-      empty.className = 'tc-empty';
-      empty.textContent = 'No habits yet. Add one below to start your first 90-day identity tracker.';
-      panel.appendChild(empty);
+    if (trackerView.mode === 'detail') {
+      var h = meta.habits.find(function(x){ return x.id === trackerView.id; });
+      if (h) { renderTrackerDetail(panel, h); return; }
+      trackerView = { mode: 'list', id: null };
     }
-    meta.habits.forEach(function(h){
-      panel.appendChild(renderHabitCard(h));
-    });
-
-    var addForm = document.createElement('div');
-    addForm.className = 'tc-habit-addform';
-    var identityInput = document.createElement('input');
-    identityInput.type = 'text';
-    identityInput.placeholder = "Identity you're trying to build (e.g. A person who reads daily)";
-    var dateInput = document.createElement('input');
-    dateInput.type = 'date';
-    dateInput.value = todayStr();
-    var addBtn = document.createElement('button');
-    addBtn.type = 'button';
-    addBtn.textContent = 'Start new 90-day tracker';
-    addBtn.onclick = async function(){
-      var identity = identityInput.value.trim();
-      if (!identity) return;
-      meta.habits.push({
-        id: 'h' + Date.now(),
-        identity: identity,
-        startDate: dateInput.value || todayStr(),
-        days: new Array(90).fill(false),
-        reflections: { q1:'', q2:'', q3:'', q4:'' }
-      });
-      identityInput.value = '';
-      await saveMeta();
-      renderHabits();
-    };
-    addForm.appendChild(identityInput); addForm.appendChild(dateInput); addForm.appendChild(addBtn);
-    panel.appendChild(addForm);
+    renderTrackerList(panel);
   }
 
   async function loadTimeline(){
