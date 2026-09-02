@@ -1,0 +1,1208 @@
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --paper-card:#F7F7F7;
+    --ink:#000000;
+    --punch:#000000;
+    --brass:#555555;
+    --graphite:#444444;
+    --line:#CCCCCC;
+  }
+  html, body { margin:0; padding:0; height:100%; }
+  * { box-sizing: border-box; }
+  #tc-root{
+    font-family:'Times New Roman', Times, serif;
+    background:var(--paper);
+    color:var(--ink);
+    padding:24px;
+    border-radius:14px;
+    max-width:960px;
+    width:100%;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  .tc-stamp-title{
+    font-family:'Times New Roman', Times, serif;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    font-size:13px;
+    color:var(--punch);
+    border:2px solid var(--punch);
+    display:inline-block;
+    padding:3px 10px;
+    border-radius:3px;
+    transform:rotate(-2deg);
+    position:absolute;
+    top:0;
+    right:0;
+    cursor:pointer;
+  }
+  .tc-header{ position:relative; flex-shrink:0; }
+  .tc-header-left{ padding-right:110px; }
+  .tc-date{ font-size:12px; color:var(--graphite); position:absolute; top:32px; right:0; text-align:right; }
+  .tc-identity{ margin-bottom:2px; cursor:pointer; }
+  .tc-id-name{ font-size:19px; font-weight:700; letter-spacing:0.2px; }
+  .tc-id-title{ font-size:13px; color:var(--graphite); margin-top:3px; }
+  .tc-id-status{ font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-top:8px; color:var(--graphite); }
+  .tc-id-status.on{ color:var(--ink); font-weight:700; }
+  .tc-identity:hover .tc-id-name, .tc-identity:hover .tc-id-title{ text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px; }
+  .tc-card{
+    background:var(--paper-card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:40px 32px;
+    margin-top:16px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    flex:1;
+    min-height:0;
+  }
+  .tc-timer{ width:100%;
+    font-family:'Times New Roman', Times, serif;
+    font-size:clamp(64px, 16vw, 128px);
+    font-weight:700;
+    text-align:center;
+    letter-spacing:0px;
+    margin:0;
+  }
+  .tc-timer-wrap, .tc-bottom-group{ display:contents; }
+  .tc-cat-select-wrap{ text-align:center; position:relative; margin:0; width:100%; margin-top:24px; }
+  .tc-cat-dropdown-btn{
+    font-family:'Times New Roman', Times, serif;
+    font-size:12px;
+    font-weight:500;
+    padding:5px 14px;
+    border-radius:16px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .tc-cat-dropdown-btn:disabled{ opacity:0.6; cursor:not-allowed; }
+  .tc-cat-dot{ width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0; }
+  .tc-cat-chev{ font-size:9px; color:var(--graphite); }
+  .tc-cat-menu{
+    position:absolute; bottom:100%; left:50%; transform:translateX(-50%);
+    margin-bottom:6px; background:#fff; border:1px solid var(--line);
+    border-radius:10px; min-width:210px; max-width:260px; padding:6px;
+    z-index:20; text-align:left; box-shadow:0 4px 14px rgba(0,0,0,0.1);
+    max-height:min(320px, 60vh); overflow-y:auto;
+  }
+  .tc-cat-menu-item{ display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:6px; cursor:pointer; font-size:13px; }
+  .tc-cat-menu-item-label{ display:flex; align-items:center; gap:8px; flex:1; min-width:0; }
+  .tc-cat-menu-item-label span:last-child{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tc-cat-remove-btn{
+    flex-shrink:0; width:18px; height:18px; border-radius:50%; border:none; background:none;
+    color:var(--graphite); font-size:13px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .tc-cat-remove-btn:hover{ background:var(--paper-card); color:var(--punch); }
+  .tc-cat-menu-item:hover{ background:var(--paper-card); }
+  .tc-cat-menu-item.sel{ font-weight:700; }
+  .tc-cat-menu-divider{ height:1px; background:var(--line); margin:6px 2px; }
+  .tc-cat-add-row{ padding:6px 8px; }
+  .tc-cat-add-input{ width:100%; font-family:'Times New Roman', Times, serif; font-size:13px; padding:6px 8px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; box-sizing:border-box; }
+  .tc-cat-swatches{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+  .tc-cat-swatch{ width:16px; height:16px; border-radius:50%; cursor:pointer; border:2px solid transparent; }
+  .tc-cat-swatch.sel{ border-color:var(--ink); }
+  .tc-cat-add-btn{ width:100%; font-family:'Times New Roman', Times, serif; font-size:12px; padding:6px; border:1px solid var(--ink); background:var(--ink); color:#fff; border-radius:6px; cursor:pointer; }
+  .tc-btn-row{ text-align:center; display:flex; gap:6px; justify-content:center; width:100%; margin-top:10px; }
+  .tc-punch-btn{
+    font-family:'Times New Roman', Times, serif;
+    font-size:11px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    background:var(--punch);
+    color:#fff;
+    border:none;
+    padding:6px 8px;
+    border-radius:5px;
+    cursor:pointer;
+    position:relative;
+    flex:1;
+  }
+  .tc-punch-btn.break{ background:var(--brass); }
+  .tc-punch-btn.out{ background:var(--ink); }
+  .tc-punch-btn:disabled{ background:var(--line); color:var(--graphite); cursor:not-allowed; }
+  .tc-stampmark{
+    position:absolute;
+    top:14px; right:18px;
+    font-family:'Times New Roman', Times, serif;
+    color:var(--punch);
+    border:2px solid var(--punch);
+    padding:2px 8px;
+    border-radius:4px;
+    font-size:11px;
+    white-space:nowrap;
+    opacity:0;
+    transform:rotate(-12deg) scale(1.6);
+  }
+  @keyframes tc-stamp{ 0%{opacity:0; transform:rotate(-12deg) scale(2.2);} 60%{opacity:1; transform:rotate(-12deg) scale(0.95);} 100%{opacity:1; transform:rotate(-12deg) scale(1);} }
+  .tc-stampmark.show{ animation: tc-stamp .35s ease-out forwards; }
+  .tc-tabs{ display:flex; gap:4px; margin-top:32px; border-bottom:1px solid var(--line); flex-shrink:0; }
+  .tc-tab{
+    font-family:'Times New Roman', Times, serif;
+    font-size:13px;
+    padding:8px 14px;
+    cursor:pointer;
+    color:var(--graphite);
+    border-bottom:2px solid transparent;
+  }
+  .tc-tab.sel{ color:var(--ink); border-bottom-color:var(--punch); font-weight:600; }
+  .tc-panel{ padding-top:14px; display:flex; flex-direction:column; }
+  .tc-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:9px 0; border-bottom:1px dashed var(--line); font-size:13px;
+  }
+  .tc-row:last-child{ border-bottom:none; }
+  .tc-row .cat{ font-weight:500; }
+  .tc-row .time{ font-family:'Times New Roman', Times, serif; color:var(--graphite); }
+  .tc-empty{ text-align:center; color:var(--graphite); font-size:13px; padding:20px 0; }
+  .tc-habit{
+    display:flex; align-items:center; gap:10px; padding:8px 0;
+    border-bottom:1px dashed var(--line); font-size:14px;
+  }
+  .tc-habit:last-child{ border-bottom:none; }
+  .tc-check{
+    width:20px; height:20px; border-radius:5px; border:2px solid var(--brass);
+    cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-size:12px; color:#fff;
+  }
+  .tc-check.done{ background:var(--punch); border-color:var(--punch); }
+  .tc-habit-name{ flex:1; }
+  .tc-streak{ font-family:'Times New Roman', Times, serif; font-size:12px; color:var(--brass); }
+  .tc-addrow{ display:flex; gap:8px; margin-top:12px; }
+  .tc-addrow input{
+    flex:1; font-family:'Times New Roman', Times, serif; font-size:13px; padding:8px 10px;
+    border:1px solid var(--line); border-radius:6px; background:#fff;
+  }
+  .tc-addrow button{
+    font-family:'Times New Roman', Times, serif; font-size:13px; padding:8px 14px;
+    border:1px solid var(--ink); background:var(--ink); color:#fff; border-radius:6px; cursor:pointer;
+  }
+  .tc-bar-row{ margin-bottom:12px; }
+  .tc-bar-label{ display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; color:var(--graphite); }
+  .tc-bar-track{ height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
+  .tc-bar-fill{ height:100%; background:var(--punch); }
+  .tc-week-total{ text-align:center; font-size:13px; color:var(--graphite); margin-top:14px; }
+  .tc-cal-nav{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-shrink:0; }
+  .tc-cal-nav button{ background:none; border:1px solid var(--line); border-radius:6px; padding:4px 10px; cursor:pointer; font-family:'Times New Roman', Times, serif; color:var(--ink); font-size:13px; }
+  .tc-cal-month{ font-family:'Times New Roman', Times, serif; font-size:14px; letter-spacing:1px; }
+  .tc-cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; flex-shrink:0; }
+  .tc-cal-dow{ text-align:center; font-size:11px; color:var(--graphite); padding-bottom:4px; }
+  .tc-cal-cell{ height:42px; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:6px; cursor:pointer; font-size:13px; border:1px solid transparent; }
+  .tc-cal-cell.empty{ cursor:default; }
+  .tc-cal-cell.today{ border-color:var(--brass); }
+  .tc-cal-cell.sel{ background:var(--ink); color:var(--paper-card); }
+  .tc-cal-dot{ width:4px; height:4px; border-radius:50%; background:var(--punch); margin-top:2px; }
+  .tc-cal-cell.sel .tc-cal-dot{ background:var(--paper-card); }
+  .tc-cal-detail{ margin-top:16px; border-top:1px solid var(--line); padding-top:12px; }
+  .tc-cal-detail-title{ font-family:'Times New Roman', Times, serif; font-size:13px; margin-bottom:8px; color:var(--ink); }
+  .pending-text{ color:var(--graphite); font-style:italic; }
+  .tc-tone-picker{ display:flex; gap:6px; justify-content:flex-end; margin-top:6px; }
+  .tc-tone-dot{
+    width:14px; height:14px; border-radius:50%;
+    border:1px solid var(--line); cursor:pointer; padding:0;
+  }
+  .tc-tone-dot.sel{ border:2px solid var(--ink); }
+  #tc-root{ max-width:none; border-radius:0; }
+  .tc-id-name{ font-size:30px; }
+  .tc-id-title{ font-size:17px; margin-top:5px; }
+  .tc-id-status{ font-size:13px; margin-top:10px; }
+  .tc-header{ margin-top:-6px; }
+  .tc-timer{ font-size:clamp(100px, 13vw, 260px); }
+  .tc-cat-dropdown-btn{ font-size:16px; padding:9px 22px; gap:10px; }
+  .tc-cat-dot{ width:11px; height:11px; }
+  .tc-task-wrap{ max-width:460px; margin-left:auto; margin-right:auto; }
+  .tc-task-input{ font-size:15px; padding:9px 20px; max-width:100%; width:100%; }
+  .tc-btn-row{ max-width:640px; margin-left:auto; margin-right:auto; }
+  .tc-punch-btn{ font-size:15px; padding:15px 20px; border-radius:8px; letter-spacing:1px; }
+  .tc-card{ padding:56px 48px; }
+  .tc-day-table{ width:100%; border-collapse:collapse; font-size:13px; }
+  .tc-day-table th{ text-align:left; font-weight:500; color:var(--graphite); padding:6px 8px; border-bottom:1px solid var(--line); font-size:11px; text-transform:uppercase; letter-spacing:0.5px; }
+  .tc-day-table td{ padding:9px 8px; border-bottom:1px dashed var(--line); font-family:'Times New Roman', Times, serif; color:var(--ink); vertical-align:middle; }
+  .tc-day-table tr:last-child td{ border-bottom:none; }
+  .tc-day-table td.cat{ font-family:'Times New Roman', Times, serif; font-weight:500; }
+  .tc-cat-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; }
+  .tc-day-table td.pending{ color:var(--graphite); font-style:italic; }
+  .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+  .tc-report-title{ font-family:'Times New Roman', Times, serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; color:var(--graphite); margin-bottom:14px; text-align:center; }
+  .tc-report-row{ display:flex; justify-content:space-between; padding:9px 2px; border-bottom:1px dashed var(--line); font-size:14px; }
+  .tc-report-row:last-child{ border-bottom:none; }
+  .tc-report-label{ color:var(--graphite); }
+  .tc-report-value{ font-weight:700; }
+  .tc-timeline-list{ margin-top:4px; }
+  .tc-timeline-item{ display:flex; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line); font-size:13px; }
+  .tc-timeline-item:last-child{ border-bottom:none; }
+  .tc-timeline-date{ color:var(--graphite); flex-shrink:0; white-space:nowrap; }
+  .tc-timeline-text{ font-weight:500; }
+  .tc-timeline-add{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .tc-timeline-add input[type="text"]{ flex:1; min-width:140px; font-family:'Times New Roman', Times, serif; font-size:13px; padding:8px 10px; border:1px solid var(--line); border-radius:6px; }
+  .tc-timeline-add input[type="date"]{ font-family:'Times New Roman', Times, serif; font-size:13px; padding:8px 10px; border:1px solid var(--line); border-radius:6px; }
+  .tc-main-nav{ display:flex; gap:0; margin-bottom:20px; border:1px solid var(--ink); border-radius:8px; overflow:hidden; flex-shrink:0; }
+  #tc-view-clock{ flex:1; min-height:0; display:flex; flex-direction:column; }
+  #tc-view-records{ flex:1; min-height:0; display:flex; flex-direction:column; }
+  .tc-main-tab{
+    flex:1; font-family:'Times New Roman', Times, serif; font-size:13px; letter-spacing:1px; text-transform:uppercase;
+    padding:11px 8px; background:#fff; color:var(--ink); border:none; cursor:pointer;
+  }
+  .tc-main-tab.sel{ background:var(--ink); color:#fff; }
+  .tc-task-wrap{ width:100%; text-align:center; margin-top:10px; }
+  .tc-task-input{
+    font-family:'Times New Roman', Times, serif;
+    font-size:12px;
+    padding:6px 14px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    text-align:center;
+    width:80%;
+    max-width:280px;
+    background:#fff;
+    color:var(--ink);
+  }
+  .tc-task-input:disabled{ opacity:0.6; cursor:not-allowed; }
+  #tc-root.tc-focus .tc-main-nav,
+  #tc-root.tc-focus .tc-header-left,
+  #tc-root.tc-focus .tc-date,
+  #tc-root.tc-focus .tc-tone-picker{ display:none; }
+  #tc-root.tc-focus #tc-view-clock{ position:fixed; inset:0; z-index:900; background:var(--paper); display:flex; flex-direction:column; }
+  #tc-root.tc-focus .tc-header{ flex-shrink:0; }
+  #tc-root.tc-focus #tc-timecard-toggle{ position:fixed; top:20px; right:20px; z-index:1000; background:var(--paper); }
+  #tc-root.tc-focus .tc-card{ border:none; border-radius:0; margin:0; flex:1; padding-bottom:25px; }
+  #tc-root.tc-focus .tc-timer-wrap{ display:flex; flex:1; min-height:0; width:100%; align-items:center; justify-content:center; }
+  #tc-root.tc-focus .tc-timer{ font-size:326px; }
+  #tc-root.tc-focus .tc-bottom-group{ display:flex; flex-direction:column; align-items:center; width:100%; flex-shrink:0; }
+  #tc-root.tc-focus .tc-cat-select-wrap{ margin-top:0; }
+  #tc-root.tc-focus .tc-cat-dropdown-btn{ font-size:17px; padding:10px 24px; gap:10px; }
+  #tc-root.tc-focus .tc-cat-dot{ width:12px; height:12px; }
+  #tc-root.tc-focus .tc-task-wrap{ max-width:520px; margin-left:auto; margin-right:auto; margin-top:10px; }
+  #tc-root.tc-focus .tc-task-input{ font-size:16px; padding:10px 22px; width:100%; }
+  #tc-root.tc-focus .tc-btn-row{ max-width:680px; margin-left:auto; margin-right:auto; margin-top:14px; }
+  #tc-root.tc-focus .tc-punch-btn{ font-size:16px; padding:16px 22px; border-radius:8px; letter-spacing:1px; }
+
+  /* ===== Tablet ===== */
+  @media (max-width: 900px){
+    #tc-root{ padding:20px; }
+    .tc-header-left{ padding-right:88px; }
+    .tc-id-name{ font-size:24px; }
+    .tc-id-title{ font-size:14px; margin-top:4px; }
+    .tc-id-status{ font-size:12px; margin-top:8px; }
+    .tc-header{ margin-top:0; }
+    .tc-stamp-title{ font-size:11px; padding:2px 8px; }
+    .tc-date{ font-size:11px; top:28px; }
+    .tc-tone-picker{ top:48px !important; }
+    .tc-card{ padding:32px 24px; }
+    .tc-timer{ font-size:clamp(72px, 15vw, 180px); }
+    .tc-cat-dropdown-btn{ font-size:14px; padding:8px 18px; }
+    .tc-task-wrap{ max-width:380px; }
+    .tc-task-input{ font-size:13px; padding:8px 16px; }
+    .tc-btn-row{ max-width:520px; }
+    .tc-punch-btn{ font-size:13px; padding:13px 16px; }
+    .tc-main-tab{ font-size:12px; padding:10px 6px; }
+    .tc-tab{ font-size:13px; padding:7px 10px; }
+    #tc-root.tc-focus .tc-timer{ font-size:clamp(90px, 20vw, 220px); }
+    #tc-root.tc-focus .tc-cat-dropdown-btn{ font-size:14px; padding:8px 18px; }
+    #tc-root.tc-focus .tc-task-input{ font-size:14px; padding:8px 18px; }
+    #tc-root.tc-focus .tc-punch-btn{ font-size:14px; padding:14px 18px; }
+  }
+
+  /* ===== Mobile ===== */
+  @media (max-width: 480px){
+    #tc-root{ padding:14px; }
+    .tc-header-left{ padding-right:72px; }
+    .tc-id-name{ font-size:19px; }
+    .tc-id-title{ font-size:12px; margin-top:3px; }
+    .tc-id-status{ font-size:10px; margin-top:6px; }
+    .tc-stamp-title{ font-size:10px; padding:2px 7px; }
+    .tc-date{ font-size:10px; top:24px; }
+    .tc-tone-picker{ top:42px !important; gap:4px; }
+    .tc-tone-dot{ width:12px; height:12px; }
+    .tc-card{ padding:24px 16px; }
+    .tc-timer{ font-size:clamp(52px, 16vw, 96px); }
+    .tc-cat-select-wrap{ margin-top:16px; }
+    .tc-cat-dropdown-btn{ font-size:12px; padding:6px 14px; }
+    .tc-cat-dot{ width:9px; height:9px; }
+    .tc-task-wrap{ max-width:100%; margin-top:8px; }
+    .tc-task-input{ font-size:12px; padding:6px 14px; width:90%; }
+    .tc-btn-row{ max-width:100%; gap:5px; }
+    .tc-punch-btn{ font-size:11px; padding:11px 6px; }
+    .tc-main-nav{ margin-bottom:14px; }
+    .tc-main-tab{ font-size:11px; padding:9px 4px; }
+    .tc-tabs{ margin-top:22px; }
+    .tc-tab{ font-size:11px; padding:6px 6px; }
+    .tc-cal-cell{ height:36px; font-size:12px; }
+    .tc-day-table{ font-size:11px; }
+    #tc-root.tc-focus .tc-timer{ font-size:clamp(56px, 22vw, 130px); }
+    #tc-root.tc-focus .tc-card{ padding-bottom:16px; }
+    #tc-root.tc-focus .tc-cat-dropdown-btn{ font-size:12px; padding:7px 16px; }
+    #tc-root.tc-focus .tc-task-input{ font-size:12px; padding:7px 16px; }
+    #tc-root.tc-focus .tc-btn-row{ gap:5px; }
+    #tc-root.tc-focus .tc-punch-btn{ font-size:12px; padding:13px 8px; }
+    #tc-root.tc-focus #tc-timecard-toggle{ top:12px; right:12px; font-size:9px; }
+  }
+</style>
+
+<div id="tc-root">
+  <h2 class="sr-only">Career time clock: clock in and out by identity role and task, track attendance, and review performance reports.</h2>
+
+  <div class="tc-main-nav">
+    <button class="tc-main-tab sel" id="tc-main-tab-clock" type="button">Clock</button>
+    <button class="tc-main-tab" id="tc-main-tab-records" type="button">Records</button>
+  </div>
+
+  <div id="tc-view-clock">
+    <div class="tc-header">
+      <div class="tc-header-left">
+        <div class="tc-identity" id="tc-identity"></div>
+      </div>
+      <div class="tc-stamp-title" id="tc-timecard-toggle">Time card</div>
+      <div class="tc-date" id="tc-date"></div>
+      <div class="tc-tone-picker" id="tc-tone-picker" style="position:absolute; top:56px; right:0;"></div>
+    </div>
+
+    <div class="tc-card">
+      <div class="tc-stampmark" id="tc-stamp">Punched</div>
+      <div class="tc-timer-wrap" id="tc-timer-wrap">
+        <div class="tc-timer" id="tc-timer">00:00:00</div>
+      </div>
+      <div class="tc-bottom-group" id="tc-bottom-group">
+        <div class="tc-cat-select-wrap" id="tc-cat-select-wrap">
+          <button class="tc-cat-dropdown-btn" id="tc-cat-btn" type="button">
+            <span class="tc-cat-dot" id="tc-cat-btn-dot"></span>
+            <span id="tc-cat-btn-label">Category</span>
+            <span class="tc-cat-chev">▾</span>
+          </button>
+          <div class="tc-cat-menu" id="tc-cat-menu" style="display:none;"></div>
+        </div>
+        <div class="tc-task-wrap">
+          <input type="text" class="tc-task-input" id="tc-task-input" placeholder="Task or subject (optional)">
+        </div>
+        <div class="tc-btn-row">
+          <button class="tc-punch-btn" id="tc-in-btn">Clock in</button>
+          <button class="tc-punch-btn break" id="tc-break-btn">Break</button>
+          <button class="tc-punch-btn out" id="tc-out-btn">Clock out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tc-view-records" style="display:none;">
+    <div class="tc-tabs">
+      <div class="tc-tab sel" data-tab="log">Attendance</div>
+      <div class="tc-tab" data-tab="habits">Habits</div>
+      <div class="tc-tab" data-tab="week">Performance Report</div>
+      <div class="tc-tab" data-tab="timeline">Timeline</div>
+    </div>
+
+    <div class="tc-panel" id="tc-panel-log">
+      <div class="tc-cal-nav">
+        <button id="tc-cal-prev" aria-label="Previous month">‹</button>
+        <div class="tc-cal-month" id="tc-cal-month-label"></div>
+        <button id="tc-cal-next" aria-label="Next month">›</button>
+      </div>
+      <div class="tc-cal-grid" id="tc-cal-grid"></div>
+      <div class="tc-cal-detail" id="tc-cal-detail"></div>
+    </div>
+    <div class="tc-panel" id="tc-panel-habits" style="display:none;"></div>
+    <div class="tc-panel" id="tc-panel-week" style="display:none;"></div>
+    <div class="tc-panel" id="tc-panel-timeline" style="display:none;"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var PALETTE = ['#FF8FAB','#4ECDC4','#6FA8FF','#C39BFF','#FFB26B','#FFE066','#FF8C7A','#7ED9A0'];
+  var DEFAULT_CATEGORIES = [
+    { name:'Study', color: PALETTE[0] },
+    { name:'Class', color: PALETTE[2] },
+    { name:'Hobby', color: PALETTE[4] },
+    { name:'Exercise', color: PALETTE[3] },
+    { name:'Rest', color: PALETTE[6] }
+  ];
+  var meta = { categories: DEFAULT_CATEGORIES.slice(), habits: [], activeSession: null, selectedCategory: null, tone: 'white',
+    identity: { name: 'Your Name', title: 'Add your future title' },
+    firstShiftLogged: false, longestShiftMinutes: 0 };
+  function categoryColorByName(name){
+    var found = meta.categories.find(function(c){ return c.name === name; });
+    if (found) return found.color;
+    var sum = 0;
+    for (var i = 0; i < (name||'').length; i++) sum += name.charCodeAt(i);
+    return PALETTE[sum % PALETTE.length];
+  }
+  var TONE_OPTIONS = [
+    { id: 'white', paper: '#FFFFFF', card: '#F7F7F7', label: 'White' },
+    { id: 'cream', paper: '#F5F1E8', card: '#FBF8F1', label: 'Cream' },
+    { id: 'gray', paper: '#E8E9EB', card: '#F4F5F6', label: 'Gray' }
+  ];
+  function applyTone(){
+    var t = TONE_OPTIONS.find(function(o){ return o.id === meta.tone; }) || TONE_OPTIONS[0];
+    document.getElementById('tc-root').style.setProperty('--paper', t.paper);
+    document.getElementById('tc-root').style.setProperty('--paper-card', t.card);
+  }
+  function renderTonePicker(){
+    var wrap = document.getElementById('tc-tone-picker');
+    wrap.innerHTML = '';
+    TONE_OPTIONS.forEach(function(t){
+      var dot = document.createElement('button');
+      dot.className = 'tc-tone-dot' + (meta.tone === t.id ? ' sel' : '');
+      dot.style.background = t.paper;
+      dot.title = t.label;
+      dot.setAttribute('aria-label', t.label);
+      dot.onclick = async function(){
+        meta.tone = t.id;
+        await saveMeta();
+        applyTone();
+        renderTonePicker();
+      };
+      wrap.appendChild(dot);
+    });
+  }
+  var todayEntries = [];
+  var todayHabits = {};
+  var todayEvents = [];
+  var tickHandle = null;
+  var calMonth = new Date(); calMonth.setDate(1); calMonth.setHours(0,0,0,0);
+  var selectedDateKey = null;
+  var dataDates = new Set();
+
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+  function dateKey(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+  function todayStr(){ return dateKey(new Date()); }
+  function fmtDuration(ms){
+    var s = Math.floor(ms/1000);
+    var h = Math.floor(s/3600); s -= h*3600;
+    var m = Math.floor(s/60); s -= m*60;
+    return pad(h)+':'+pad(m)+':'+pad(s);
+  }
+  function fmtClock(d){
+    var h = d.getHours(), m = d.getMinutes();
+    var ap = h >= 12 ? 'PM' : 'AM';
+    var h12 = h % 12; if (h12 === 0) h12 = 12;
+    return h12+':'+pad(m)+' '+ap;
+  }
+
+  async function safeGet(key, shared){
+    try { var r = await window.storage.get(key, !!shared); return r ? r.value : null; }
+    catch(e){ return null; }
+  }
+  async function safeSet(key, value, shared){
+    try { await window.storage.set(key, JSON.stringify(value), !!shared); } catch(e){}
+  }
+
+  async function loadMeta(){
+    var raw = await safeGet('meta', false);
+    if (raw) { try { var parsed = JSON.parse(raw); meta = Object.assign(meta, parsed); } catch(e){} }
+    if (!meta.categories || !meta.categories.length) meta.categories = DEFAULT_CATEGORIES.slice();
+    if (typeof meta.categories[0] === 'string') {
+      meta.categories = meta.categories.map(function(name, i){ return { name: name, color: PALETTE[i % PALETTE.length] }; });
+    }
+    if (!meta.selectedCategory) meta.selectedCategory = meta.categories[0].name;
+    if (meta.identity && meta.identity.employee !== undefined) {
+      var combinedTitle = [meta.identity.employer, meta.identity.position].filter(function(v){ return v && v !== 'Future Self' && v !== 'Add your target role'; }).join(', ');
+      meta.identity = { name: meta.identity.employee, title: combinedTitle || 'Add your future title' };
+    }
+  }
+  async function saveMeta(){ await safeSet('meta', meta, false); }
+
+  async function loadToday(){
+    var raw = await safeGet('day:'+todayStr(), false);
+    if (raw) { try { var d = JSON.parse(raw); todayEntries = d.entries || []; todayHabits = d.habits || {}; todayEvents = d.events || []; } catch(e){} }
+    else { todayEntries = []; todayHabits = {}; todayEvents = []; }
+  }
+  async function saveToday(){
+    await safeSet('day:'+todayStr(), { entries: todayEntries, habits: todayHabits, events: todayEvents }, false);
+    dataDates.add(todayStr());
+  }
+  async function loadDataDates(){
+    try {
+      var r = await window.storage.list('day:', false);
+      if (r && r.keys) { dataDates = new Set(r.keys.map(function(k){ return k.replace('day:',''); })); }
+    } catch(e){}
+  }
+
+  function renderDate(){
+    var el = document.getElementById('tc-date');
+    var now = new Date();
+    el.textContent = now.toLocaleDateString(undefined, { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  }
+
+  function currentStatusText(){
+    if (meta.activeSession) return 'On Shift';
+    if (todayEntries.length > 0) return 'Shift Ended';
+    return 'Off Shift';
+  }
+
+  async function editIdentityField(field, promptLabel){
+    var current = meta.identity[field];
+    var val = prompt(promptLabel, current);
+    if (val === null) return;
+    val = val.trim();
+    if (!val) return;
+    meta.identity[field] = val;
+    await saveMeta();
+    renderIdentity();
+  }
+
+  function renderIdentity(){
+    var wrap = document.getElementById('tc-identity');
+    var status = currentStatusText();
+    wrap.innerHTML = '';
+    var name = document.createElement('div');
+    name.className = 'tc-id-name';
+    name.textContent = meta.identity.name;
+    name.onclick = function(e){ e.stopPropagation(); editIdentityField('name', 'Your name'); };
+    var title = document.createElement('div');
+    title.className = 'tc-id-title';
+    title.textContent = meta.identity.title;
+    title.onclick = function(e){ e.stopPropagation(); editIdentityField('title', 'Your future title (e.g. Future BSN, RN)'); };
+    var statusEl = document.createElement('div');
+    statusEl.className = 'tc-id-status' + (status === 'On Shift' ? ' on' : '');
+    statusEl.textContent = status;
+    wrap.appendChild(name); wrap.appendChild(title); wrap.appendChild(statusEl);
+  }
+
+  function renderChips(){
+    var btn = document.getElementById('tc-cat-btn');
+    var dot = document.getElementById('tc-cat-btn-dot');
+    var label = document.getElementById('tc-cat-btn-label');
+    dot.style.background = categoryColorByName(meta.selectedCategory);
+    label.textContent = meta.selectedCategory || 'Select category';
+    btn.disabled = !!meta.activeSession;
+    renderCategoryMenu();
+  }
+
+  function closeCatMenu(){
+    document.getElementById('tc-cat-menu').style.display = 'none';
+  }
+
+  function renderCategoryMenu(){
+    var menu = document.getElementById('tc-cat-menu');
+    menu.innerHTML = '';
+    meta.categories.forEach(function(cat){
+      var item = document.createElement('div');
+      item.className = 'tc-cat-menu-item' + (cat.name === meta.selectedCategory ? ' sel' : '');
+      var label = document.createElement('div');
+      label.className = 'tc-cat-menu-item-label';
+      var d = document.createElement('span');
+      d.className = 'tc-cat-dot';
+      d.style.background = cat.color;
+      var text = document.createElement('span');
+      text.textContent = cat.name;
+      label.appendChild(d); label.appendChild(text);
+      label.onclick = async function(){
+        meta.selectedCategory = cat.name;
+        await saveMeta();
+        renderChips();
+        closeCatMenu();
+      };
+      item.appendChild(label);
+
+      if (meta.categories.length > 1 && !(meta.activeSession && meta.activeSession.category === cat.name)) {
+        var removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'tc-cat-remove-btn';
+        removeBtn.setAttribute('aria-label', 'Remove ' + cat.name);
+        removeBtn.textContent = '\u00d7';
+        removeBtn.onclick = async function(e){
+          e.stopPropagation();
+          if (removeBtn.getAttribute('data-confirm') !== '1') {
+            removeBtn.setAttribute('data-confirm', '1');
+            removeBtn.textContent = '\u2713';
+            removeBtn.title = 'Click again to confirm removal';
+            setTimeout(function(){
+              if (removeBtn.isConnected) {
+                removeBtn.setAttribute('data-confirm', '0');
+                removeBtn.textContent = '\u00d7';
+              }
+            }, 2500);
+            return;
+          }
+          meta.categories = meta.categories.filter(function(c){ return c.name !== cat.name; });
+          if (meta.selectedCategory === cat.name) meta.selectedCategory = meta.categories[0].name;
+          await saveMeta();
+          renderChips();
+        };
+        item.appendChild(removeBtn);
+      }
+      menu.appendChild(item);
+    });
+    var divider = document.createElement('div');
+    divider.className = 'tc-cat-menu-divider';
+    menu.appendChild(divider);
+
+    var addRow = document.createElement('div');
+    addRow.className = 'tc-cat-add-row';
+    var input = document.createElement('input');
+    input.className = 'tc-cat-add-input';
+    input.placeholder = 'New category name';
+    var swatchWrap = document.createElement('div');
+    swatchWrap.className = 'tc-cat-swatches';
+    var chosenColor = PALETTE[0];
+    PALETTE.forEach(function(c, idx){
+      var sw = document.createElement('div');
+      sw.className = 'tc-cat-swatch' + (idx === 0 ? ' sel' : '');
+      sw.style.background = c;
+      sw.onclick = function(){
+        chosenColor = c;
+        swatchWrap.querySelectorAll('.tc-cat-swatch').forEach(function(s){ s.classList.remove('sel'); });
+        sw.classList.add('sel');
+      };
+      swatchWrap.appendChild(sw);
+    });
+    var addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'tc-cat-add-btn';
+    addBtn.textContent = 'Add category';
+    addBtn.onclick = async function(){
+      var name = input.value.trim();
+      if (!name) return;
+      if (meta.categories.some(function(c){ return c.name === name; })) return;
+      meta.categories.push({ name: name, color: chosenColor });
+      meta.selectedCategory = name;
+      await saveMeta();
+      renderChips();
+      closeCatMenu();
+    };
+    addRow.appendChild(input); addRow.appendChild(swatchWrap); addRow.appendChild(addBtn);
+    menu.appendChild(addRow);
+  }
+
+  function renderTimerTick(){
+    var timer = document.getElementById('tc-timer');
+    var s = meta.activeSession;
+    if (s) {
+      var elapsed = s.accumulatedMs + (s.onBreak ? 0 : (Date.now() - s.segmentStart));
+      timer.textContent = fmtDuration(elapsed);
+    } else {
+      timer.textContent = '00:00:00';
+    }
+  }
+
+  function renderButtons(){
+    var inBtn = document.getElementById('tc-in-btn');
+    var breakBtn = document.getElementById('tc-break-btn');
+    var outBtn = document.getElementById('tc-out-btn');
+    var taskInput = document.getElementById('tc-task-input');
+    var s = meta.activeSession;
+    inBtn.disabled = !!s;
+    breakBtn.disabled = !s;
+    outBtn.disabled = !s;
+    breakBtn.textContent = (s && s.onBreak) ? 'Resume' : 'Break';
+    taskInput.disabled = !!s;
+    taskInput.value = s ? (s.task || '') : taskInput.value;
+  }
+
+  async function onClockIn(){
+    if (meta.activeSession) return;
+    var task = document.getElementById('tc-task-input').value.trim();
+    meta.activeSession = {
+      category: meta.selectedCategory,
+      task: task,
+      sessionStart: Date.now(),
+      accumulatedMs: 0,
+      segmentStart: Date.now(),
+      onBreak: false
+    };
+    todayEvents.push({ type: 'in', category: meta.selectedCategory, task: task, time: Date.now() });
+    var isFirstEver = !meta.firstShiftLogged;
+    if (isFirstEver) meta.firstShiftLogged = true;
+    await saveToday();
+    await saveMeta();
+    startTicking();
+    flashStamp(isFirstEver ? 'Welcome.' : 'Shift Started');
+    renderChips();
+    renderButtons();
+    renderTimerTick();
+    renderIdentity();
+    refreshCalendarIfShowing();
+    if (isFirstEver) await addTimelineEntry(new Date(), 'First shift clocked in.');
+  }
+
+  async function onBreak(){
+    var s = meta.activeSession;
+    if (!s) return;
+    if (s.onBreak) {
+      s.segmentStart = Date.now();
+      s.onBreak = false;
+      todayEvents.push({ type: 'resume', time: Date.now() });
+    } else {
+      s.accumulatedMs += Date.now() - s.segmentStart;
+      s.segmentStart = null;
+      s.onBreak = true;
+      todayEvents.push({ type: 'break', time: Date.now() });
+    }
+    await saveToday();
+    await saveMeta();
+    flashStamp(s.onBreak ? 'On Break' : 'Resumed');
+    renderButtons();
+    renderTimerTick();
+    refreshCalendarIfShowing();
+  }
+
+  async function onClockOut(){
+    var s = meta.activeSession;
+    if (!s) return;
+    var end = Date.now();
+    var totalMs = s.accumulatedMs + (s.onBreak ? 0 : (end - s.segmentStart));
+    var minutes = Math.max(1, Math.round(totalMs / 60000));
+    todayEntries.push({
+      category: s.category,
+      task: s.task || '',
+      start: s.sessionStart,
+      end: end,
+      minutes: minutes
+    });
+    todayEvents.push({ type: 'out', time: end });
+    meta.activeSession = null;
+    var isNewRecord = minutes > meta.longestShiftMinutes;
+    if (isNewRecord) meta.longestShiftMinutes = minutes;
+    await saveToday();
+    await saveMeta();
+    stopTicking();
+    flashStamp('Shift Ended');
+    document.getElementById('tc-task-input').value = '';
+    renderChips();
+    renderButtons();
+    renderTimerTick();
+    renderIdentity();
+    renderWeek();
+    refreshCalendarIfShowing();
+    if (isNewRecord && minutes >= 60) {
+      var h = Math.floor(minutes/60), m = minutes%60;
+      await addTimelineEntry(new Date(), 'New longest shift record: ' + h + 'h ' + m + 'm.');
+    }
+  }
+
+  function refreshCalendarIfShowing(){
+    if (selectedDateKey === todayStr()) {
+      renderCalendar();
+      renderDayDetail(todayStr());
+    }
+  }
+
+  function flashStamp(text){
+    var s = document.getElementById('tc-stamp');
+    s.textContent = text || 'Punched';
+    s.classList.remove('show');
+    void s.offsetWidth;
+    s.classList.add('show');
+    setTimeout(function(){ s.classList.remove('show'); }, 1400);
+  }
+
+  function startTicking(){
+    stopTicking();
+    tickHandle = setInterval(renderTimerTick, 1000);
+  }
+  function stopTicking(){
+    if (tickHandle) { clearInterval(tickHandle); tickHandle = null; }
+  }
+
+  function buildSessions(events){
+    var sorted = events.slice().sort(function(a,b){ return a.time - b.time; });
+    var sessions = [];
+    var current = null;
+    var pendingBreakStart = null;
+    sorted.forEach(function(e){
+      if (e.type === 'in') {
+        current = { category: e.category, task: e.task || '', inTime: e.time, breaks: [], outTime: null };
+        pendingBreakStart = null;
+      } else if (e.type === 'break' && current) {
+        pendingBreakStart = e.time;
+      } else if (e.type === 'resume' && current && pendingBreakStart != null) {
+        current.breaks.push({ start: pendingBreakStart, end: e.time });
+        pendingBreakStart = null;
+      } else if (e.type === 'out' && current) {
+        current.outTime = e.time;
+        sessions.push(current);
+        current = null;
+        pendingBreakStart = null;
+      }
+    });
+    if (current) {
+      if (pendingBreakStart != null) current.ongoingBreakStart = pendingBreakStart;
+      sessions.push(current);
+    }
+    return sessions;
+  }
+
+  function fmtBreakCell(session){
+    var parts = session.breaks.map(function(b){ return fmtClock(new Date(b.start)) + '–' + fmtClock(new Date(b.end)); });
+    if (session.ongoingBreakStart) parts.push(fmtClock(new Date(session.ongoingBreakStart)) + '–…');
+    return parts.length ? parts.join(', ') : '–';
+  }
+
+  async function renderDayDetail(key){
+    var detail = document.getElementById('tc-cal-detail');
+    detail.innerHTML = '<div class="tc-empty">Loading…</div>';
+    var events = [];
+    if (key === todayStr()) {
+      events = todayEvents;
+    } else {
+      var raw = await safeGet('day:'+key, false);
+      if (raw) { try { events = JSON.parse(raw).events || []; } catch(e){} }
+    }
+    var d = new Date(key + 'T00:00:00');
+    detail.innerHTML = '';
+    var title = document.createElement('div');
+    title.className = 'tc-cal-detail-title';
+    title.textContent = d.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
+    detail.appendChild(title);
+    var sessions = buildSessions(events);
+    if (!sessions.length) {
+      var empty = document.createElement('div');
+      empty.className = 'tc-empty';
+      empty.textContent = 'No punches this day.';
+      detail.appendChild(empty);
+      return;
+    }
+    var table = document.createElement('table');
+    table.className = 'tc-day-table';
+    var rows = sessions.map(function(s){
+      var color = categoryColorByName(s.category);
+      var outCell = s.outTime ? fmtClock(new Date(s.outTime)) : '<span class="pending-text">In progress</span>';
+      return '<tr>'+
+        '<td class="cat"><span class="tc-cat-dot" style="background:'+color+'"></span>'+s.category+'</td>'+
+        '<td>'+(s.task ? s.task : '<span class="pending-text">–</span>')+'</td>'+
+        '<td>'+fmtClock(new Date(s.inTime))+'</td>'+
+        '<td>'+fmtBreakCell(s)+'</td>'+
+        '<td'+(s.outTime ? '' : ' class="pending"')+'>'+outCell+'</td>'+
+      '</tr>';
+    }).join('');
+    table.innerHTML = '<thead><tr><th>Category</th><th>Task</th><th>Clocked in</th><th>Break</th><th>Clocked out</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody>';
+    detail.appendChild(table);
+  }
+
+  function renderCalendar(){
+    var grid = document.getElementById('tc-cal-grid');
+    var monthLabel = document.getElementById('tc-cal-month-label');
+    monthLabel.textContent = calMonth.toLocaleDateString(undefined, { month:'long', year:'numeric' });
+    grid.innerHTML = '';
+    ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(function(d){
+      var el = document.createElement('div');
+      el.className = 'tc-cal-dow';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+    var firstDay = new Date(calMonth.getFullYear(), calMonth.getMonth(), 1);
+    var startOffset = firstDay.getDay();
+    var daysInMonth = new Date(calMonth.getFullYear(), calMonth.getMonth()+1, 0).getDate();
+    for (var i = 0; i < startOffset; i++) {
+      var blank = document.createElement('div');
+      blank.className = 'tc-cal-cell empty';
+      grid.appendChild(blank);
+    }
+    var todayKey = todayStr();
+    for (var day = 1; day <= daysInMonth; day++) {
+      var d = new Date(calMonth.getFullYear(), calMonth.getMonth(), day);
+      var key = dateKey(d);
+      var cell = document.createElement('div');
+      cell.className = 'tc-cal-cell' + (key === todayKey ? ' today' : '') + (key === selectedDateKey ? ' sel' : '');
+      var num = document.createElement('div');
+      num.textContent = day;
+      cell.appendChild(num);
+      if (dataDates.has(key)) {
+        var dot = document.createElement('div');
+        dot.className = 'tc-cal-dot';
+        cell.appendChild(dot);
+      }
+      cell.onclick = (function(k){ return function(){ selectedDateKey = k; renderCalendar(); renderDayDetail(k); }; })(key);
+      grid.appendChild(cell);
+    }
+  }
+
+  function renderHabits(){
+    var panel = document.getElementById('tc-panel-habits');
+    panel.innerHTML = '';
+    if (!meta.habits.length) {
+      var empty = document.createElement('div');
+      empty.className = 'tc-empty';
+      empty.textContent = 'No habits yet. Add one below to start building a streak.';
+      panel.appendChild(empty);
+    }
+    meta.habits.forEach(function(h){
+      var done = !!todayHabits[h.id];
+      var row = document.createElement('div');
+      row.className = 'tc-habit';
+      var check = document.createElement('div');
+      check.className = 'tc-check' + (done ? ' done' : '');
+      check.textContent = done ? '✓' : '';
+      check.onclick = function(){ toggleHabit(h); };
+      var name = document.createElement('div');
+      name.className = 'tc-habit-name';
+      name.textContent = h.name;
+      var streak = document.createElement('div');
+      streak.className = 'tc-streak';
+      streak.textContent = (h.streak || 0) + ' day streak';
+      row.appendChild(check); row.appendChild(name); row.appendChild(streak);
+      panel.appendChild(row);
+    });
+    var addRow = document.createElement('div');
+    addRow.className = 'tc-addrow';
+    var input = document.createElement('input');
+    input.placeholder = 'e.g. Review notes for 20 minutes';
+    var btn = document.createElement('button');
+    btn.textContent = 'Add habit';
+    btn.onclick = async function(){
+      var name = input.value.trim();
+      if (!name) return;
+      meta.habits.push({ id: 'h' + Date.now(), name: name, streak: 0, lastDate: null });
+      input.value = '';
+      await saveMeta();
+      renderHabits();
+    };
+    addRow.appendChild(input); addRow.appendChild(btn);
+    panel.appendChild(addRow);
+  }
+
+  async function toggleHabit(h){
+    var today = todayStr();
+    var wasDone = !!todayHabits[h.id];
+    if (!wasDone) {
+      var y = new Date(); y.setDate(y.getDate() - 1);
+      var yesterday = dateKey(y);
+      if (h.lastDate === yesterday) h.streak = (h.streak || 0) + 1;
+      else h.streak = 1;
+      h.lastDate = today;
+      todayHabits[h.id] = true;
+    } else {
+      h.streak = Math.max(0, (h.streak || 0) - 1);
+      h.lastDate = h.streak > 0 ? h.lastDate : null;
+      todayHabits[h.id] = false;
+    }
+    await saveMeta();
+    await saveToday();
+    renderHabits();
+  }
+
+  async function loadTimeline(){
+    var raw = await safeGet('timeline', false);
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch(e){ return []; }
+  }
+  async function saveTimeline(entries){
+    await safeSet('timeline', entries, false);
+  }
+  async function addTimelineEntry(dateObj, text){
+    var entries = await loadTimeline();
+    entries.push({ date: dateKey(dateObj), text: text });
+    await saveTimeline(entries);
+    if (document.getElementById('tc-panel-timeline').style.display !== 'none') renderTimeline();
+  }
+
+  async function renderTimeline(){
+    var panel = document.getElementById('tc-panel-timeline');
+    panel.innerHTML = '<div class="tc-empty">Loading…</div>';
+    var entries = await loadTimeline();
+    panel.innerHTML = '';
+
+    var title = document.createElement('div');
+    title.className = 'tc-report-title';
+    title.textContent = 'Career Timeline';
+    panel.appendChild(title);
+
+    var list = document.createElement('div');
+    list.className = 'tc-timeline-list';
+    if (!entries.length) {
+      var empty = document.createElement('div');
+      empty.className = 'tc-empty';
+      empty.textContent = 'No milestones yet. Clock in to log your first shift, or add one below.';
+      list.appendChild(empty);
+    } else {
+      var sorted = entries.slice().sort(function(a,b){ return a.date.localeCompare(b.date); });
+      sorted.forEach(function(e){
+        var d = new Date(e.date + 'T00:00:00');
+        var row = document.createElement('div');
+        row.className = 'tc-timeline-item';
+        row.innerHTML = '<span class="tc-timeline-date">'+d.toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})+' —</span>'+
+          '<span class="tc-timeline-text">'+e.text+'</span>';
+        list.appendChild(row);
+      });
+    }
+    panel.appendChild(list);
+
+    var addRow = document.createElement('div');
+    addRow.className = 'tc-timeline-add';
+    var dateInput = document.createElement('input');
+    dateInput.type = 'date';
+    dateInput.value = todayStr();
+    var textInput = document.createElement('input');
+    textInput.type = 'text';
+    textInput.placeholder = 'e.g. Started Nursing School';
+    var addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.textContent = 'Add milestone';
+    addBtn.onclick = async function(){
+      var text = textInput.value.trim();
+      if (!text || !dateInput.value) return;
+      var entries = await loadTimeline();
+      entries.push({ date: dateInput.value, text: text });
+      await saveTimeline(entries);
+      textInput.value = '';
+      renderTimeline();
+    };
+    addRow.appendChild(dateInput); addRow.appendChild(textInput); addRow.appendChild(addBtn);
+    panel.appendChild(addRow);
+  }
+
+  async function renderWeek(){
+    var panel = document.getElementById('tc-panel-week');
+    panel.innerHTML = '<div class="tc-empty">Loading…</div>';
+    var totals = {};
+    var grandTotal = 0;
+    var longestShift = 0;
+    var deepWorkSessions = 0;
+    var daysWithEntries = 0;
+    for (var i = 0; i < 7; i++) {
+      var d = new Date(); d.setDate(d.getDate() - i);
+      var key = dateKey(d);
+      var raw = (key === todayStr()) ? JSON.stringify({entries: todayEntries}) : await safeGet('day:'+key, false);
+      if (!raw) continue;
+      try {
+        var day = JSON.parse(raw);
+        var entries = day.entries || [];
+        if (entries.length) daysWithEntries++;
+        entries.forEach(function(e){
+          totals[e.category] = (totals[e.category] || 0) + e.minutes;
+          grandTotal += e.minutes;
+          if (e.minutes > longestShift) longestShift = e.minutes;
+          if (e.minutes >= 25) deepWorkSessions++;
+        });
+      } catch(e){}
+    }
+    panel.innerHTML = '';
+    if (!grandTotal) {
+      panel.innerHTML = '<div class="tc-empty">No shifts logged in the past 7 days yet.</div>';
+      return;
+    }
+    var attendancePct = Math.round((daysWithEntries / 7) * 100);
+    var rating = attendancePct >= 85 ? 'Outstanding' : attendancePct >= 60 ? 'Strong' : attendancePct >= 35 ? 'Building' : 'Needs Focus';
+    var lh = Math.floor(longestShift/60), lm = longestShift%60;
+
+    var title = document.createElement('div');
+    title.className = 'tc-report-title';
+    title.textContent = 'Performance Report — Last 7 Days';
+    panel.appendChild(title);
+
+    var reportRows = [
+      ['Hours Worked', (grandTotal/60).toFixed(1) + ' hrs'],
+      ['Attendance', daysWithEntries + ' of 7 days (' + attendancePct + '%)'],
+      ['Longest Shift', lh + 'h ' + lm + 'm'],
+      ['Deep Work Sessions', deepWorkSessions],
+      ['Consistency Rating', rating]
+    ];
+    reportRows.forEach(function(r){
+      var row = document.createElement('div');
+      row.className = 'tc-report-row';
+      row.innerHTML = '<span class="tc-report-label">'+r[0]+'</span><span class="tc-report-value">'+r[1]+'</span>';
+      panel.appendChild(row);
+    });
+
+    var byCatTitle = document.createElement('div');
+    byCatTitle.className = 'tc-report-title';
+    byCatTitle.style.marginTop = '20px';
+    byCatTitle.textContent = 'Hours by Category';
+    panel.appendChild(byCatTitle);
+
+    var cats = Object.keys(totals).sort(function(a,b){ return totals[b]-totals[a]; });
+    var max = Math.max.apply(null, cats.map(function(c){ return totals[c]; }));
+    cats.forEach(function(c){
+      var mins = totals[c];
+      var hrs = (mins/60).toFixed(1);
+      var pct = Math.round((mins/max)*100);
+      var row = document.createElement('div');
+      row.className = 'tc-bar-row';
+      row.innerHTML = '<div class="tc-bar-label"><span>'+c+'</span><span>'+hrs+' hr</span></div>'+
+        '<div class="tc-bar-track"><div class="tc-bar-fill" style="width:'+pct+'%; background:'+categoryColorByName(c)+'"></div></div>';
+      panel.appendChild(row);
+    });
+  }
+
+  function setMainTab(which){
+    var clockTab = document.getElementById('tc-main-tab-clock');
+    var recordsTab = document.getElementById('tc-main-tab-records');
+    var clockView = document.getElementById('tc-view-clock');
+    var recordsView = document.getElementById('tc-view-records');
+    if (which === 'records') {
+      clockTab.classList.remove('sel');
+      recordsTab.classList.add('sel');
+      clockView.style.display = 'none';
+      recordsView.style.display = 'flex';
+    } else {
+      recordsTab.classList.remove('sel');
+      clockTab.classList.add('sel');
+      recordsView.style.display = 'none';
+      clockView.style.display = 'flex';
+    }
+  }
+
+  function setupTabs(){
+    var tabs = document.querySelectorAll('.tc-tab');
+    tabs.forEach(function(t){
+      t.onclick = function(){
+        tabs.forEach(function(x){ x.classList.remove('sel'); });
+        t.classList.add('sel');
+        document.getElementById('tc-panel-log').style.display = 'none';
+        document.getElementById('tc-panel-habits').style.display = 'none';
+        document.getElementById('tc-panel-week').style.display = 'none';
+        document.getElementById('tc-panel-timeline').style.display = 'none';
+        var target = document.getElementById('tc-panel-' + t.getAttribute('data-tab'));
+        target.style.display = 'flex';
+        if (t.getAttribute('data-tab') === 'week') renderWeek();
+        if (t.getAttribute('data-tab') === 'log') { renderCalendar(); renderDayDetail(selectedDateKey); }
+        if (t.getAttribute('data-tab') === 'timeline') renderTimeline();
+      };
+    });
+  }
+
+  async function init(){
+    renderDate();
+    await loadMeta();
+    await loadToday();
+    await loadDataDates();
+    selectedDateKey = todayStr();
+    applyTone();
+    renderTonePicker();
+    renderIdentity();
+    renderChips();
+    renderButtons();
+    renderTimerTick();
+    renderCalendar();
+    renderDayDetail(selectedDateKey);
+    renderHabits();
+    setupTabs();
+    document.getElementById('tc-in-btn').onclick = onClockIn;
+    document.getElementById('tc-break-btn').onclick = onBreak;
+    document.getElementById('tc-out-btn').onclick = onClockOut;
+    document.getElementById('tc-cal-prev').onclick = function(){ calMonth.setMonth(calMonth.getMonth()-1); renderCalendar(); };
+    document.getElementById('tc-cal-next').onclick = function(){ calMonth.setMonth(calMonth.getMonth()+1); renderCalendar(); };
+    document.getElementById('tc-timecard-toggle').onclick = function(){
+      document.getElementById('tc-root').classList.toggle('tc-focus');
+    };
+
+    document.getElementById('tc-cat-btn').onclick = function(e){
+      e.stopPropagation();
+      if (meta.activeSession) return;
+      var menu = document.getElementById('tc-cat-menu');
+      menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    };
+    document.addEventListener('click', function(e){
+      var wrap = document.getElementById('tc-cat-select-wrap');
+      if (wrap && !wrap.contains(e.target)) closeCatMenu();
+    });
+    document.getElementById('tc-main-tab-clock').onclick = function(){ setMainTab('clock'); };
+    document.getElementById('tc-main-tab-records').onclick = function(){ setMainTab('records'); };
+    if (meta.activeSession) startTicking();
+  }
+
+  init();
+})();
+</script>
