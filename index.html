@@ -173,28 +173,35 @@
   .tc-row .cat{ font-weight:500; }
   .tc-row .time{ font-family:'Times New Roman', Times, serif; color:var(--graphite); }
   .tc-empty{ text-align:center; color:var(--graphite); font-size:13px; padding:20px 0; }
-  .tc-habit{
-    display:flex; align-items:center; gap:10px; padding:8px 0;
-    border-bottom:1px dashed var(--line); font-size:14px;
+  .tc-habit-card{ border:1px solid var(--line); border-radius:10px; padding:18px; margin-bottom:20px; }
+  .tc-habit-header{ margin-bottom:14px; position:relative; }
+  .tc-habit-field{ font-size:13px; color:var(--graphite); margin-bottom:4px; cursor:pointer; }
+  .tc-habit-field b{ color:var(--ink); font-weight:700; }
+  .tc-habit-field:hover b{ text-decoration:underline; text-decoration-style:dotted; }
+  .tc-habit-remove{ position:absolute; top:0; right:0; width:22px; height:22px; border-radius:50%; border:none; background:none; color:var(--graphite); font-size:14px; cursor:pointer; }
+  .tc-habit-remove:hover{ background:var(--paper-card); color:var(--punch); }
+  .tc-habit-phase-label{ font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin:14px 0 8px; }
+  .tc-habit-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(34px, 1fr)); gap:5px; }
+  .tc-habit-box{
+    height:34px; border-radius:6px; display:flex; align-items:flex-start; justify-content:flex-start;
+    padding:3px; font-size:9px; color:var(--graphite); cursor:pointer; position:relative; border:1px solid transparent;
   }
-  .tc-habit:last-child{ border-bottom:none; }
-  .tc-check{
-    width:20px; height:20px; border-radius:5px; border:2px solid var(--brass);
-    cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center;
-    font-size:12px; color:#fff;
+  .tc-habit-box.phase1{ background:#FBE0DE; }
+  .tc-habit-box.phase2{ background:#FBF1D6; }
+  .tc-habit-box.phase3{ background:#E3F1E6; }
+  .tc-habit-box.milestone{ border-color:var(--ink); }
+  .tc-habit-box.done::after{
+    content:'✓'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:15px; font-weight:700; color:var(--ink);
   }
-  .tc-check.done{ background:var(--punch); border-color:var(--punch); }
-  .tc-habit-name{ flex:1; }
-  .tc-streak{ font-family:'Times New Roman', Times, serif; font-size:12px; color:var(--brass); }
-  .tc-addrow{ display:flex; gap:8px; margin-top:12px; }
-  .tc-addrow input{
-    flex:1; font-family:'Times New Roman', Times, serif; font-size:13px; padding:8px 10px;
-    border:1px solid var(--line); border-radius:6px; background:#fff;
-  }
-  .tc-addrow button{
-    font-family:'Times New Roman', Times, serif; font-size:13px; padding:8px 14px;
-    border:1px solid var(--ink); background:var(--ink); color:#fff; border-radius:6px; cursor:pointer;
-  }
+  .tc-habit-msg{ font-size:12px; font-style:italic; color:var(--graphite); margin:8px 0 4px; }
+  .tc-habit-reflect{ margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .tc-habit-reflect-title{ font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }
+  .tc-habit-q{ font-size:13px; font-style:italic; margin-bottom:4px; }
+  .tc-habit-a{ width:100%; font-family:'Times New Roman', Times, serif; font-size:13px; border:none; border-bottom:1px solid var(--line); padding:4px 2px; margin-bottom:12px; background:transparent; resize:vertical; }
+  .tc-habit-addform{ display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+  .tc-habit-addform input{ font-family:'Times New Roman', Times, serif; font-size:13px; padding:9px 12px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  .tc-habit-addform button{ font-family:'Times New Roman', Times, serif; font-size:13px; padding:9px 14px; border:1px solid var(--ink); background:var(--ink); color:#fff; border-radius:6px; cursor:pointer; }
   .tc-bar-row{ margin-bottom:12px; }
   .tc-bar-label{ display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; color:var(--graphite); }
   .tc-bar-track{ height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
@@ -964,68 +971,179 @@
     }
   }
 
-  function renderHabits(){
-    var panel = document.getElementById('tc-panel-habits');
-    panel.innerHTML = '';
-    if (!meta.habits.length) {
-      var empty = document.createElement('div');
-      empty.className = 'tc-empty';
-      empty.textContent = 'No habits yet. Add one below to start building a streak.';
-      panel.appendChild(empty);
+  var HABIT_PHASES = [
+    { cls: 'phase1', start: 1, end: 3, label: 'Phase 1 · 3 Days', msg: "Good job! You've got the hardest part!" },
+    { cls: 'phase2', start: 4, end: 21, label: 'Phase 2 · 3 Weeks', msg: "Keep going! You're already building momentum!" },
+    { cls: 'phase3', start: 22, end: 90, label: 'Phase 3 · 3 Months', msg: 'Congrats! This habit is part of your identity now!' }
+  ];
+  var HABIT_QUESTIONS = [
+    { key: 'q1', text: 'What was the most challenging part of turning this habit into your identity?' },
+    { key: 'q2', text: 'What adjustments did you make to conquer this?' },
+    { key: 'q3', text: 'What would tempt you to slip back into old patterns, and how will you handle it?' },
+    { key: 'q4', text: 'How do you feel now compared to day one?' }
+  ];
+
+  function migrateHabit(h){
+    if (!h.days) {
+      h.identity = h.identity || h.name || 'New habit';
+      h.startDate = h.startDate || todayStr();
+      h.days = new Array(90).fill(false);
+      h.reflections = h.reflections || { q1:'', q2:'', q3:'', q4:'' };
+      delete h.name; delete h.streak; delete h.lastDate;
     }
-    meta.habits.forEach(function(h){
-      var done = !!todayHabits[h.id];
-      var row = document.createElement('div');
-      row.className = 'tc-habit';
-      var check = document.createElement('div');
-      check.className = 'tc-check' + (done ? ' done' : '');
-      check.textContent = done ? '✓' : '';
-      check.onclick = function(){ toggleHabit(h); };
-      var name = document.createElement('div');
-      name.className = 'tc-habit-name';
-      name.textContent = h.name;
-      var streak = document.createElement('div');
-      streak.className = 'tc-streak';
-      streak.textContent = (h.streak || 0) + ' day streak';
-      row.appendChild(check); row.appendChild(name); row.appendChild(streak);
-      panel.appendChild(row);
-    });
-    var addRow = document.createElement('div');
-    addRow.className = 'tc-addrow';
-    var input = document.createElement('input');
-    input.placeholder = 'e.g. Review notes for 20 minutes';
-    var btn = document.createElement('button');
-    btn.textContent = 'Add habit';
-    btn.onclick = async function(){
-      var name = input.value.trim();
-      if (!name) return;
-      meta.habits.push({ id: 'h' + Date.now(), name: name, streak: 0, lastDate: null });
-      input.value = '';
+    if (!h.reflections) h.reflections = { q1:'', q2:'', q3:'', q4:'' };
+    return h;
+  }
+
+  async function editHabitField(h, field, label){
+    var current = field === 'identity' ? h.identity : h.startDate;
+    var val = prompt(label, current);
+    if (val === null) return;
+    val = val.trim();
+    if (!val) return;
+    if (field === 'identity') h.identity = val;
+    else h.startDate = val;
+    await saveMeta();
+    renderHabits();
+  }
+
+  async function toggleHabitDay(h, dayIndex){
+    h.days[dayIndex] = !h.days[dayIndex];
+    await saveMeta();
+    renderHabits();
+  }
+
+  function renderHabitGrid(h, phase){
+    var wrap = document.createElement('div');
+    wrap.className = 'tc-habit-grid';
+    for (var d = phase.start; d <= phase.end; d++) {
+      var box = document.createElement('div');
+      var idx = d - 1;
+      var isMilestone = (d === 3 || d === 21 || d === 90);
+      box.className = 'tc-habit-box ' + phase.cls + (h.days[idx] ? ' done' : '') + (isMilestone ? ' milestone' : '');
+      box.textContent = d;
+      box.onclick = function(i){ return function(){ toggleHabitDay(h, i); }; }(idx);
+      wrap.appendChild(box);
+    }
+    return wrap;
+  }
+
+  function renderHabitCard(h){
+    var card = document.createElement('div');
+    card.className = 'tc-habit-card';
+
+    var header = document.createElement('div');
+    header.className = 'tc-habit-header';
+    var removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'tc-habit-remove';
+    removeBtn.textContent = '\u00d7';
+    removeBtn.onclick = async function(e){
+      e.stopPropagation();
+      if (removeBtn.getAttribute('data-confirm') !== '1') {
+        removeBtn.setAttribute('data-confirm', '1');
+        removeBtn.textContent = '\u2713';
+        setTimeout(function(){
+          if (removeBtn.isConnected) { removeBtn.setAttribute('data-confirm', '0'); removeBtn.textContent = '\u00d7'; }
+        }, 2500);
+        return;
+      }
+      meta.habits = meta.habits.filter(function(x){ return x.id !== h.id; });
       await saveMeta();
       renderHabits();
     };
-    addRow.appendChild(input); addRow.appendChild(btn);
-    panel.appendChild(addRow);
+    var identityField = document.createElement('div');
+    identityField.className = 'tc-habit-field';
+    identityField.innerHTML = 'Identity you\'re trying to build: <b>' + h.identity + '</b>';
+    identityField.onclick = function(){ editHabitField(h, 'identity', "Identity you're trying to build"); };
+    var dateField = document.createElement('div');
+    dateField.className = 'tc-habit-field';
+    dateField.innerHTML = 'Start date: <b>' + h.startDate + '</b>';
+    dateField.onclick = function(){ editHabitField(h, 'startDate', 'Start date (YYYY-MM-DD)'); };
+    header.appendChild(removeBtn);
+    header.appendChild(identityField);
+    header.appendChild(dateField);
+    card.appendChild(header);
+
+    HABIT_PHASES.forEach(function(phase){
+      var label = document.createElement('div');
+      label.className = 'tc-habit-phase-label';
+      label.textContent = phase.label;
+      card.appendChild(label);
+      card.appendChild(renderHabitGrid(h, phase));
+      var msg = document.createElement('div');
+      msg.className = 'tc-habit-msg';
+      msg.textContent = phase.msg;
+      card.appendChild(msg);
+    });
+
+    var reflect = document.createElement('div');
+    reflect.className = 'tc-habit-reflect';
+    var reflectTitle = document.createElement('div');
+    reflectTitle.className = 'tc-habit-reflect-title';
+    reflectTitle.textContent = 'Self-Reflections After';
+    reflect.appendChild(reflectTitle);
+    HABIT_QUESTIONS.forEach(function(q){
+      var qEl = document.createElement('div');
+      qEl.className = 'tc-habit-q';
+      qEl.textContent = q.text;
+      var aEl = document.createElement('textarea');
+      aEl.className = 'tc-habit-a';
+      aEl.rows = 2;
+      aEl.value = h.reflections[q.key] || '';
+      aEl.onblur = async function(){
+        h.reflections[q.key] = aEl.value;
+        await saveMeta();
+      };
+      reflect.appendChild(qEl);
+      reflect.appendChild(aEl);
+    });
+    card.appendChild(reflect);
+
+    return card;
   }
 
-  async function toggleHabit(h){
-    var today = todayStr();
-    var wasDone = !!todayHabits[h.id];
-    if (!wasDone) {
-      var y = new Date(); y.setDate(y.getDate() - 1);
-      var yesterday = dateKey(y);
-      if (h.lastDate === yesterday) h.streak = (h.streak || 0) + 1;
-      else h.streak = 1;
-      h.lastDate = today;
-      todayHabits[h.id] = true;
-    } else {
-      h.streak = Math.max(0, (h.streak || 0) - 1);
-      h.lastDate = h.streak > 0 ? h.lastDate : null;
-      todayHabits[h.id] = false;
+  function renderHabits(){
+    var panel = document.getElementById('tc-panel-habits');
+    panel.innerHTML = '';
+    meta.habits.forEach(migrateHabit);
+    if (!meta.habits.length) {
+      var empty = document.createElement('div');
+      empty.className = 'tc-empty';
+      empty.textContent = 'No habits yet. Add one below to start your first 90-day identity tracker.';
+      panel.appendChild(empty);
     }
-    await saveMeta();
-    await saveToday();
-    renderHabits();
+    meta.habits.forEach(function(h){
+      panel.appendChild(renderHabitCard(h));
+    });
+
+    var addForm = document.createElement('div');
+    addForm.className = 'tc-habit-addform';
+    var identityInput = document.createElement('input');
+    identityInput.type = 'text';
+    identityInput.placeholder = "Identity you're trying to build (e.g. A person who reads daily)";
+    var dateInput = document.createElement('input');
+    dateInput.type = 'date';
+    dateInput.value = todayStr();
+    var addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.textContent = 'Start new 90-day tracker';
+    addBtn.onclick = async function(){
+      var identity = identityInput.value.trim();
+      if (!identity) return;
+      meta.habits.push({
+        id: 'h' + Date.now(),
+        identity: identity,
+        startDate: dateInput.value || todayStr(),
+        days: new Array(90).fill(false),
+        reflections: { q1:'', q2:'', q3:'', q4:'' }
+      });
+      identityInput.value = '';
+      await saveMeta();
+      renderHabits();
+    };
+    addForm.appendChild(identityInput); addForm.appendChild(dateInput); addForm.appendChild(addBtn);
+    panel.appendChild(addForm);
   }
 
   async function loadTimeline(){
