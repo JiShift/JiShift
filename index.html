@@ -277,28 +277,35 @@
   .tc-report-nav{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; gap:10px; }
   .tc-report-nav button{ background:none; border:1px solid var(--line); border-radius:6px; width:26px; height:26px; cursor:pointer; font-size:13px; flex-shrink:0; }
   .tc-report-range{ font-size:12px; font-weight:700; text-align:center; flex:1; }
-  .tc-report-barchart{ display:flex; align-items:flex-end; gap:6px; height:130px; margin-bottom:18px; }
-  .tc-report-bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
-  .tc-report-bar{ width:100%; border-radius:4px 4px 0 0; min-height:2px; }
-  .tc-report-bar-val{ font-size:9px; color:var(--graphite); margin-bottom:3px; }
-  .tc-report-bar-label{ font-size:9px; color:var(--graphite); margin-top:5px; text-transform:uppercase; }
+  .tc-report-daycards{ display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+  .tc-report-daycard{ flex:1; min-width:70px; background:var(--paper-card); border-radius:8px; padding:12px 10px; }
+  .tc-report-daycard-label{ font-size:10px; color:var(--graphite); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+  .tc-report-daycard-value{ font-size:16px; font-weight:700; color:var(--ink); }
   .tc-report-heatmap{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:18px; }
+  .tc-report-month-top{ display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:start; margin-bottom:24px; }
+  .tc-report-two-col{ display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:start; }
+  @media (max-width:700px){
+    .tc-report-month-top, .tc-report-two-col{ grid-template-columns:1fr; }
+  }
   .tc-report-heat-cell{ height:32px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--graphite); background:var(--paper-card); }
   .tc-report-breakdown-title{ font-size:12px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; margin:18px 0 10px; }
   .tc-report-breakdown-row{ margin-bottom:10px; }
   .tc-report-breakdown-label{ display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px; }
   .tc-report-breakdown-track{ height:8px; background:var(--paper-card); border-radius:4px; overflow:hidden; }
   .tc-report-breakdown-fill{ height:100%; }
-  .tc-report-callout{ border:1px solid var(--line); border-radius:8px; padding:12px; margin-bottom:10px; }
-  .tc-report-callout-value{ font-size:14px; font-weight:700; }
+  .tc-report-shift-pill{ display:flex; justify-content:space-between; align-items:center; gap:10px; padding:16px; border-radius:8px; margin-bottom:10px; font-size:14px; }
+  .tc-report-shift-pill-name{ font-weight:700; flex-shrink:0; }
+  .tc-report-shift-pill-trail{ color:var(--ink); }
+  .tc-report-shift-pill-delta{ font-weight:700; flex-shrink:0; }
+  .tc-report-story-card{ border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin-top:6px; }
+  .tc-report-story-label{ font-size:10px; text-transform:uppercase; letter-spacing:0.5px; color:var(--graphite); margin-bottom:8px; }
+  .tc-report-story-value{ font-size:19px; font-weight:700; line-height:1.3; }
   .tc-report-caption{ font-style:italic; font-size:12px; color:var(--graphite); margin-top:10px; }
+  .tc-report-year-num{ font-size:34px; font-weight:700; margin:8px 0 4px; }
+  .tc-report-year-stat{ font-size:18px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 22px; }
   .tc-report-plain-row{ display:flex; justify-content:space-between; padding:6px 2px; border-bottom:1px dashed var(--line); font-size:13px; }
   .tc-report-plain-row:last-child{ border-bottom:none; }
   .tc-report-plainstat{ font-size:13px; color:var(--ink); margin-bottom:4px; }
-  .tc-report-shift-row{ display:flex; justify-content:space-between; align-items:baseline; padding:7px 2px; border-bottom:1px dashed var(--line); font-size:13px; gap:8px; }
-  .tc-report-shift-row:last-child{ border-bottom:none; }
-  .tc-report-shift-name{ font-weight:700; flex-shrink:0; }
-  .tc-report-shift-trail{ color:var(--graphite); text-align:right; }
   .tc-timeline-list{ margin-top:4px; }
   .tc-timeline-item{ display:flex; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line); font-size:13px; }
   .tc-timeline-item:last-child{ border-bottom:none; }
@@ -1503,32 +1510,17 @@
   }
   function taskLabelOf(e){ return (e.task && e.task.trim()) ? e.task.trim() : e.category; }
 
-  function addPlainList(container, title, totalsObj, limit){
-    var h = document.createElement('div'); h.className = 'tc-report-breakdown-title'; h.textContent = title;
-    container.appendChild(h);
-    var keys = Object.keys(totalsObj).sort(function(a,b){ return totalsObj[b]-totalsObj[a]; });
-    if (limit) keys = keys.slice(0, limit);
-    if (!keys.length) {
-      var empty = document.createElement('div'); empty.className = 'tc-empty'; empty.textContent = 'No time logged yet.';
-      container.appendChild(empty);
-      return;
-    }
-    keys.forEach(function(k){
-      var row = document.createElement('div'); row.className = 'tc-report-plain-row';
-      row.innerHTML = '<span>'+k+'</span><span>'+fmtHM2(totalsObj[k])+'</span>';
-      container.appendChild(row);
-    });
-  }
-
-  function addBreakdown(container, title, catTotals, grand, limit){
+  function addBreakdown(container, title, catTotals, grand, limit, opts){
+    opts = opts || {};
     var h = document.createElement('div'); h.className = 'tc-report-breakdown-title'; h.textContent = title;
     container.appendChild(h);
     var cats = Object.keys(catTotals).sort(function(a,b){ return catTotals[b]-catTotals[a]; });
     if (limit) cats = cats.slice(0, limit);
     cats.forEach(function(c){
       var pct = grand > 0 ? Math.round((catTotals[c]/grand)*100) : 0;
+      var timeLabel = opts.fullTime ? fmtHM2(catTotals[c]) : opts.hourOnly ? (Math.round(catTotals[c]/60) + ' hr') : (fmtHoursShort(catTotals[c]) + ' · ' + pct + '%');
       var row = document.createElement('div'); row.className = 'tc-report-breakdown-row';
-      row.innerHTML = '<div class="tc-report-breakdown-label"><span>'+c+'</span><span>'+fmtHoursShort(catTotals[c])+' · '+pct+'%</span></div>'+
+      row.innerHTML = '<div class="tc-report-breakdown-label"><span>'+c+'</span><span>'+timeLabel+'</span></div>'+
         '<div class="tc-report-breakdown-track"><div class="tc-report-breakdown-fill" style="width:'+pct+'%;background:'+categoryColorByName(c)+'"></div></div>';
       container.appendChild(row);
     });
@@ -1553,38 +1545,27 @@
     loading.remove();
 
     var dayTotals = days.map(function(d){ return d.entries.reduce(function(s,e){ return s+e.minutes; }, 0); });
-    var dayTopCat = days.map(function(d){
-      var t = {}; d.entries.forEach(function(e){ t[e.category] = (t[e.category]||0)+e.minutes; });
-      var best=null, bestVal=0;
-      Object.keys(t).forEach(function(c){ if (t[c]>bestVal){ best=c; bestVal=t[c]; } });
-      return best;
-    });
-    var maxMin = Math.max.apply(null, dayTotals.concat([1]));
 
-    var chart = document.createElement('div'); chart.className = 'tc-report-barchart';
+    var cards = document.createElement('div'); cards.className = 'tc-report-daycards';
     days.forEach(function(d, i){
-      var col = document.createElement('div'); col.className = 'tc-report-bar-col';
-      var val = document.createElement('div'); val.className = 'tc-report-bar-val';
-      val.textContent = fmtCompactHM(dayTotals[i]);
-      var bar = document.createElement('div'); bar.className = 'tc-report-bar';
-      bar.style.height = Math.max(2, Math.round((dayTotals[i]/maxMin)*90)) + 'px';
-      bar.style.background = dayTopCat[i] ? categoryColorByName(dayTopCat[i]) : 'var(--line)';
-      var lbl = document.createElement('div'); lbl.className = 'tc-report-bar-label'; lbl.textContent = DOW_ABBR[i];
-      col.appendChild(val); col.appendChild(bar); col.appendChild(lbl);
-      chart.appendChild(col);
+      var card = document.createElement('div'); card.className = 'tc-report-daycard';
+      card.innerHTML = '<div class="tc-report-daycard-label">'+DOW_ABBR[i]+'</div><div class="tc-report-daycard-value">'+fmtCompactHM(dayTotals[i])+'</div>';
+      cards.appendChild(card);
     });
-    content.appendChild(chart);
+    content.appendChild(cards);
 
     var catTotals = {}, taskTotals = {};
+    var grand = 0;
     days.forEach(function(d){
       d.entries.forEach(function(e){
         catTotals[e.category] = (catTotals[e.category]||0) + e.minutes;
         var tk = taskLabelOf(e);
         taskTotals[tk] = (taskTotals[tk]||0) + e.minutes;
+        grand += e.minutes;
       });
     });
-    addPlainList(content, 'By Category', catTotals);
-    addPlainList(content, 'By Task', taskTotals);
+    addBreakdown(content, 'By Category', catTotals, grand, null, { fullTime: true });
+    addBreakdown(content, 'By Task', taskTotals, grand, null, { fullTime: true });
   }
 
   async function renderPatternMonth(content){
@@ -1625,22 +1606,29 @@
       if (topCat) cell.style.background = categoryColorByName(topCat);
       grid.appendChild(cell);
     });
-    content.appendChild(grid);
 
+    var statsCol = document.createElement('div');
     var hero = document.createElement('div'); hero.className = 'tc-summary-hero'; hero.textContent = fmtHoursMinutes(grand);
-    content.appendChild(hero);
+    statsCol.appendChild(hero);
     var cap = document.createElement('div'); cap.className = 'tc-daily-caption'; cap.textContent = 'total recorded time';
-    content.appendChild(cap);
-
-    var line1 = document.createElement('div'); line1.className = 'tc-report-plainstat';
+    statsCol.appendChild(cap);
+    var line1 = document.createElement('div'); line1.className = 'tc-report-plainstat'; line1.style.marginTop = '10px';
     line1.textContent = activeDays + ' / ' + totalDays + ' active days';
-    content.appendChild(line1);
+    statsCol.appendChild(line1);
     var line2 = document.createElement('div'); line2.className = 'tc-report-plainstat';
     line2.textContent = (activeDays>0 ? fmtHoursMinutes(Math.round(grand/activeDays)) : '0 min') + ' average active day';
-    content.appendChild(line2);
+    statsCol.appendChild(line2);
 
-    addBreakdown(content, 'Category Allocation', catTotals, grand);
-    addBreakdown(content, 'Top Tasks', taskTotals, grand, 5);
+    var topRow = document.createElement('div'); topRow.className = 'tc-report-month-top';
+    topRow.appendChild(grid); topRow.appendChild(statsCol);
+    content.appendChild(topRow);
+
+    var breakdownRow = document.createElement('div'); breakdownRow.className = 'tc-report-two-col';
+    var catCol = document.createElement('div'); var taskCol = document.createElement('div');
+    addBreakdown(catCol, 'Category Allocation', catTotals, grand);
+    addBreakdown(taskCol, 'Top Tasks', taskTotals, grand, 5);
+    breakdownRow.appendChild(catCol); breakdownRow.appendChild(taskCol);
+    content.appendChild(breakdownRow);
   }
 
   function quarterMonths(anchor){
@@ -1688,16 +1676,22 @@
       return { name:c, v0:v0, v1:v1, v2:v2, delta:v2-v0 };
     }).sort(function(a,b){ return b.delta-a.delta; });
 
+    var twoCol = document.createElement('div'); twoCol.className = 'tc-report-two-col';
+    var shiftCol = document.createElement('div');
+    var tasksCol = document.createElement('div');
+
     var shiftTitle = document.createElement('div'); shiftTitle.className = 'tc-report-breakdown-title'; shiftTitle.textContent = 'Category Shift';
-    content.appendChild(shiftTitle);
+    shiftCol.appendChild(shiftTitle);
     if (!catShift.length) {
-      var e0 = document.createElement('div'); e0.className='tc-empty'; e0.textContent='No time logged this quarter.'; content.appendChild(e0);
+      var e0 = document.createElement('div'); e0.className='tc-empty'; e0.textContent='No time logged this quarter.'; shiftCol.appendChild(e0);
     }
     catShift.forEach(function(c){
-      var row = document.createElement('div'); row.className = 'tc-report-shift-row';
-      row.innerHTML = '<span class="tc-report-shift-name">'+c.name+'</span>'+
-        '<span class="tc-report-shift-trail">'+fmtHoursShort(c.v0)+' → '+fmtHoursShort(c.v1)+' → '+fmtHoursShort(c.v2)+'&nbsp;&nbsp;<b>'+fmtSignedHours(c.delta)+'</b></span>';
-      content.appendChild(row);
+      var row = document.createElement('div'); row.className = 'tc-report-shift-pill';
+      row.style.background = categoryColorByName(c.name);
+      row.innerHTML = '<span class="tc-report-shift-pill-name">'+c.name+'</span>'+
+        '<span class="tc-report-shift-pill-trail">'+fmtHoursShort(c.v0)+' → '+fmtHoursShort(c.v1)+' → '+fmtHoursShort(c.v2)+'</span>'+
+        '<span class="tc-report-shift-pill-delta">'+fmtSignedHours(c.delta)+'</span>';
+      shiftCol.appendChild(row);
     });
 
     var task0 = taskTotalsFor(0), task2 = taskTotalsFor(2);
@@ -1709,16 +1703,19 @@
       .sort(function(a,b){ return b.delta-a.delta; })
       .slice(0, 5);
 
-    var tasksTitle = document.createElement('div'); tasksTitle.className = 'tc-report-breakdown-title'; tasksTitle.style.marginTop='18px'; tasksTitle.textContent = 'Tasks Driving the Shift';
-    content.appendChild(tasksTitle);
+    var tasksTitle = document.createElement('div'); tasksTitle.className = 'tc-report-breakdown-title'; tasksTitle.textContent = 'Tasks Driving the Shift';
+    tasksCol.appendChild(tasksTitle);
     if (!taskShift.length) {
-      var e1 = document.createElement('div'); e1.className='tc-empty'; e1.textContent='Not enough data yet.'; content.appendChild(e1);
+      var e1 = document.createElement('div'); e1.className='tc-empty'; e1.textContent='Not enough data yet.'; tasksCol.appendChild(e1);
     }
     taskShift.forEach(function(t){
       var row = document.createElement('div'); row.className = 'tc-report-plain-row';
       row.innerHTML = '<span>'+t.name+'</span><span>'+fmtSignedHours(t.delta)+'</span>';
-      content.appendChild(row);
+      tasksCol.appendChild(row);
     });
+
+    twoCol.appendChild(shiftCol); twoCol.appendChild(tasksCol);
+    content.appendChild(twoCol);
 
     if (catShift.length) {
       var biggest = catShift[0];
@@ -1731,13 +1728,11 @@
         var d = (t2Scoped[t]||0) - (t0Scoped[t]||0);
         if (Math.abs(d) > Math.abs(leadDelta)) { leadDelta = d; leadTask = t; }
       });
-      var storyTitle = document.createElement('div'); storyTitle.className = 'tc-report-breakdown-title'; storyTitle.style.marginTop='18px'; storyTitle.textContent = 'Biggest Quarterly Story';
-      content.appendChild(storyTitle);
-      var story = document.createElement('div'); story.className = 'tc-report-callout';
       var verb = biggest.delta >= 0 ? 'gained' : 'lost';
       var storyText = biggest.name + ' ' + verb + ' ' + Math.round(Math.abs(biggest.delta)/60) + ' hours' +
         (leadTask ? ', led primarily by ' + leadTask + ' (' + fmtSignedHours(leadDelta) + ').' : '.');
-      story.innerHTML = '<div class="tc-report-callout-value">'+storyText+'</div>';
+      var story = document.createElement('div'); story.className = 'tc-report-story-card';
+      story.innerHTML = '<div class="tc-report-story-label">Biggest Quarterly Story</div><div class="tc-report-story-value">'+storyText+'</div>';
       content.appendChild(story);
     }
   }
@@ -1766,11 +1761,18 @@
     });
 
     var hoursRecorded = Math.round(grand/60);
-    var hero = document.createElement('div'); hero.className = 'tc-summary-hero'; hero.textContent = hoursRecorded.toLocaleString() + ' hours recorded';
-    content.appendChild(hero);
+    var yearNum = document.createElement('div'); yearNum.className = 'tc-report-year-num'; yearNum.textContent = String(year);
+    content.appendChild(yearNum);
+    var yearStat = document.createElement('div'); yearStat.className = 'tc-report-year-stat';
+    yearStat.textContent = hoursRecorded.toLocaleString() + ' hours recorded';
+    content.appendChild(yearStat);
 
-    addPlainList(content, 'Top Categories — Areas of Life', catTotals, 4);
-    addPlainList(content, 'Top Tasks — What You Actually Did', taskTotals, 4);
+    var twoCol = document.createElement('div'); twoCol.className = 'tc-report-two-col';
+    var catCol = document.createElement('div'); var taskCol = document.createElement('div');
+    addBreakdown(catCol, 'Top Categories — Areas of Life', catTotals, grand, 4, { hourOnly: true });
+    addBreakdown(taskCol, 'Top Tasks — What You Actually Did', taskTotals, grand, 4, { hourOnly: true });
+    twoCol.appendChild(catCol); twoCol.appendChild(taskCol);
+    content.appendChild(twoCol);
 
     var caption = document.createElement('div'); caption.className = 'tc-report-caption'; caption.style.marginTop = '16px';
     caption.textContent = 'The yearly report should preserve both truths: the category tells the life area; the task tells the lived activity.';
