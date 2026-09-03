@@ -17,7 +17,7 @@
   html, body { margin:0; padding:0; height:100%; }
   * { box-sizing: border-box; }
   #tc-root{
-    font-family:'Times New Roman', Times, serif;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
     background:var(--paper);
     color:var(--ink);
     padding:24px;
@@ -31,7 +31,7 @@
     position:relative;
   }
   .tc-stamp-title{
-    font-family:'Times New Roman', Times, serif;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
     letter-spacing:2px;
     text-transform:uppercase;
     font-size:13px;
@@ -71,7 +71,7 @@
     min-height:0;
   }
   .tc-timer{ width:100%;
-    font-family:'Times New Roman', Times, serif;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size:clamp(64px, 16vw, 128px);
     font-weight:700;
     text-align:center;
@@ -81,7 +81,7 @@
   .tc-timer-wrap, .tc-bottom-group{ display:contents; }
   .tc-cat-select-wrap{ text-align:center; position:relative; margin:0; width:100%; margin-top:24px; }
   .tc-cat-dropdown-btn{
-    font-family:'Times New Roman', Times, serif;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size:12px;
     font-weight:500;
     padding:5px 14px;
@@ -116,14 +116,14 @@
   .tc-cat-menu-item.sel{ font-weight:700; }
   .tc-cat-menu-divider{ height:1px; background:var(--line); margin:6px 2px; }
   .tc-cat-add-row{ padding:6px 8px; }
-  .tc-cat-add-input{ width:100%; font-family:'Times New Roman', Times, serif; font-size:13px; padding:6px 8px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; box-sizing:border-box; }
+  .tc-cat-add-input{ width:100%; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:13px; padding:6px 8px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; box-sizing:border-box; }
   .tc-cat-swatches{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
   .tc-cat-swatch{ width:16px; height:16px; border-radius:50%; cursor:pointer; border:2px solid transparent; }
   .tc-cat-swatch.sel{ border-color:var(--ink); }
-  .tc-cat-add-btn{ width:100%; font-family:'Times New Roman', Times, serif; font-size:12px; padding:6px; border:1px solid var(--ink); background:var(--ink); color:#fff; border-radius:6px; cursor:pointer; }
+  .tc-cat-add-btn{ width:100%; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12px; padding:6px; border:1px solid var(--ink); background:var(--ink); color:#fff; border-radius:6px; cursor:pointer; }
   .tc-btn-row{ text-align:center; display:flex; gap:6px; justify-content:center; width:100%; margin-top:10px; }
   .tc-punch-btn{
-    font-family:'Times New Roman', Times, serif;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size:11px;
     letter-spacing:0.5px;
     text-transform:uppercase;
@@ -142,7 +142,7 @@
   .tc-stampmark{
     position:absolute;
     top:14px; right:18px;
-    font-family:'Times New Roman', Times, serif;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
     color:var(--punch);
     border:2px solid var(--punch);
     padding:2px 8px;
@@ -156,7 +156,7 @@
   .tc-stampmark.show{ animation: tc-stamp .35s ease-out forwards; }
   .tc-tabs{ display:flex; gap:4px; margin-top:32px; border-bottom:1px solid var(--line); flex-shrink:0; }
   .tc-tab{
-    font-family:'Times New Roman', Times, serif;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size:13px;
     padding:8px 14px;
     cursor:pointer;
@@ -171,7 +171,7 @@
   }
   .tc-row:last-child{ border-bottom:none; }
   .tc-row .cat{ font-weight:500; }
-  .tc-row .time{ font-family:'Times New Roman', Times, serif; color:var(--graphite); }
+  .tc-row .time{ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; color:var(--graphite); }
   .tc-empty{ text-align:center; color:var(--graphite); font-size:13px; padding:20px 0; }
   .tc-tracker-section{ margin-bottom:26px; }
   .tc-tracker-section-title{ font-size:15px; font-weight:700; margin-bottom:10px; }
@@ -211,18 +211,14 @@
   .tc-habit-reflect{ margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
   .tc-habit-reflect-title{ font-size:12px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }
   .tc-habit-q{ font-size:13px; font-style:italic; margin-bottom:4px; }
-  .tc-habit-a{ width:100%; font-family:'Times New Roman', Times, serif; font-size:13px; border:none; border-bottom:1px solid var(--line); padding:4px 2px; margin-bottom:12px; background:transparent; resize:vertical; }
+  .tc-habit-a{ width:100%; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:13px; border:none; border-bottom:1px solid var(--line); padding:4px 2px; margin-bottom:12px; background:transparent; resize:vertical; }
   .tc-habit-addform{ display:flex; flex-direction:column; gap:8px; margin-top:6px; }
-  .tc-habit-addform input{ font-family:'Times New Roman', Times, serif; font-size:13px; padding:9px 12px; border:1px solid var(--line); border-radius:6px; background:#fff; }
-  .tc-habit-addform button{ font-family:'Times New Roman', Times, serif; font-size:13px; padding:9px 14px; border:1px solid var(--ink); background:var(--ink); color:#fff; border-radius:6px; cursor:pointer; }
-  .tc-bar-row{ margin-bottom:12px; }
-  .tc-bar-label{ display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; color:var(--graphite); }
-  .tc-bar-track{ height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
-  .tc-bar-fill{ height:100%; background:var(--punch); }
+  .tc-habit-addform input{ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:13px; padding:9px 12px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  .tc-habit-addform button{ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:13px; padding:9px 14px; border:1px solid var(--ink); background:var(--ink); color:#fff; border-radius:6px; cursor:pointer; }
   .tc-week-total{ text-align:center; font-size:13px; color:var(--graphite); margin-top:14px; }
   .tc-cal-nav{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-shrink:0; }
-  .tc-cal-nav button{ background:none; border:1px solid var(--line); border-radius:6px; padding:4px 10px; cursor:pointer; font-family:'Times New Roman', Times, serif; color:var(--ink); font-size:13px; }
-  .tc-cal-month{ font-family:'Times New Roman', Times, serif; font-size:14px; letter-spacing:1px; }
+  .tc-cal-nav button{ background:none; border:1px solid var(--line); border-radius:6px; padding:4px 10px; cursor:pointer; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; color:var(--ink); font-size:13px; }
+  .tc-cal-month{ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:14px; letter-spacing:1px; }
   .tc-cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; flex-shrink:0; }
   .tc-cal-dow{ text-align:center; font-size:11px; color:var(--graphite); padding-bottom:4px; }
   .tc-cal-cell{ height:42px; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:6px; cursor:pointer; font-size:13px; border:1px solid transparent; }
@@ -232,10 +228,10 @@
   .tc-cal-dot{ width:4px; height:4px; border-radius:50%; background:var(--punch); margin-top:2px; }
   .tc-cal-cell.sel .tc-cal-dot{ background:var(--paper-card); }
   .tc-cal-detail{ margin-top:16px; border-top:1px solid var(--line); padding-top:12px; }
-  .tc-cal-detail-title{ font-family:'Times New Roman', Times, serif; font-size:13px; margin-bottom:8px; color:var(--ink); }
+  .tc-cal-detail-title{ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:13px; margin-bottom:8px; color:var(--ink); }
   .tc-daily-heading{ font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--ink); margin:16px 0 8px; text-align:left; }
   .tc-daily-caption{ font-style:italic; color:var(--graphite); font-size:13px; margin:2px 0 4px; }
-  .tc-summary-hero{ font-family:'Times New Roman', Times, serif; font-size:30px; font-weight:700; color:var(--ink); margin:2px 0 2px; }
+  .tc-summary-hero{ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:30px; font-weight:700; color:var(--ink); margin:2px 0 2px; }
   .tc-summary-list{ margin:14px 0 4px; }
   .tc-summary-item{ display:flex; align-items:center; gap:9px; padding:6px 0; font-size:14px; color:var(--ink); }
   .tc-summary-item .tc-cat-dot{ width:12px; height:12px; margin:0; }
@@ -262,36 +258,66 @@
   .tc-card{ padding:56px 48px; }
   .tc-day-table{ width:100%; border-collapse:collapse; font-size:13px; }
   .tc-day-table th{ text-align:left; font-weight:500; color:var(--graphite); padding:6px 8px; border-bottom:1px solid var(--line); font-size:11px; text-transform:uppercase; letter-spacing:0.5px; }
-  .tc-day-table td{ padding:9px 8px; border-bottom:1px dashed var(--line); font-family:'Times New Roman', Times, serif; color:var(--ink); vertical-align:middle; }
+  .tc-day-table td{ padding:9px 8px; border-bottom:1px dashed var(--line); font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; color:var(--ink); vertical-align:middle; }
   .tc-day-table tr:last-child td{ border-bottom:none; }
-  .tc-day-table td.cat{ font-family:'Times New Roman', Times, serif; font-weight:500; }
+  .tc-day-table td.cat{ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:500; }
   .tc-cat-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; }
   .tc-day-table td.pending{ color:var(--graphite); font-style:italic; }
   .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
-  .tc-report-title{ font-family:'Times New Roman', Times, serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; color:var(--graphite); margin-bottom:14px; text-align:center; }
+  .tc-report-title{ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; color:var(--graphite); margin-bottom:14px; text-align:center; }
   .tc-report-row{ display:flex; justify-content:space-between; padding:9px 2px; border-bottom:1px dashed var(--line); font-size:14px; }
   .tc-report-row:last-child{ border-bottom:none; }
   .tc-report-label{ color:var(--graphite); }
   .tc-report-value{ font-weight:700; }
+  .tc-report-subtabs{ display:flex; gap:4px; margin-bottom:16px; flex-wrap:wrap; }
+  .tc-report-subtab{ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; padding:6px 11px; border:1px solid var(--line); border-radius:14px; background:#fff; color:var(--graphite); cursor:pointer; }
+  .tc-report-subtab.sel{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  .tc-report-heading{ font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--graphite); margin-bottom:3px; }
+  .tc-report-question{ font-size:17px; font-weight:700; margin-bottom:14px; }
+  .tc-report-nav{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; gap:10px; }
+  .tc-report-nav button{ background:none; border:1px solid var(--line); border-radius:6px; width:26px; height:26px; cursor:pointer; font-size:13px; flex-shrink:0; }
+  .tc-report-range{ font-size:12px; font-weight:700; text-align:center; flex:1; }
+  .tc-report-barchart{ display:flex; align-items:flex-end; gap:6px; height:130px; margin-bottom:18px; }
+  .tc-report-bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+  .tc-report-bar{ width:100%; border-radius:4px 4px 0 0; min-height:2px; }
+  .tc-report-bar-val{ font-size:9px; color:var(--graphite); margin-bottom:3px; }
+  .tc-report-bar-label{ font-size:9px; color:var(--graphite); margin-top:5px; text-transform:uppercase; }
+  .tc-report-heatmap{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:18px; }
+  .tc-report-heat-cell{ height:32px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--graphite); background:var(--paper-card); }
+  .tc-report-breakdown-title{ font-size:12px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; margin:18px 0 10px; }
+  .tc-report-breakdown-row{ margin-bottom:10px; }
+  .tc-report-breakdown-label{ display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px; }
+  .tc-report-breakdown-track{ height:8px; background:var(--paper-card); border-radius:4px; overflow:hidden; }
+  .tc-report-breakdown-fill{ height:100%; }
+  .tc-report-callout{ border:1px solid var(--line); border-radius:8px; padding:12px; margin-bottom:10px; }
+  .tc-report-callout-value{ font-size:14px; font-weight:700; }
+  .tc-report-caption{ font-style:italic; font-size:12px; color:var(--graphite); margin-top:10px; }
+  .tc-report-plain-row{ display:flex; justify-content:space-between; padding:6px 2px; border-bottom:1px dashed var(--line); font-size:13px; }
+  .tc-report-plain-row:last-child{ border-bottom:none; }
+  .tc-report-plainstat{ font-size:13px; color:var(--ink); margin-bottom:4px; }
+  .tc-report-shift-row{ display:flex; justify-content:space-between; align-items:baseline; padding:7px 2px; border-bottom:1px dashed var(--line); font-size:13px; gap:8px; }
+  .tc-report-shift-row:last-child{ border-bottom:none; }
+  .tc-report-shift-name{ font-weight:700; flex-shrink:0; }
+  .tc-report-shift-trail{ color:var(--graphite); text-align:right; }
   .tc-timeline-list{ margin-top:4px; }
   .tc-timeline-item{ display:flex; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line); font-size:13px; }
   .tc-timeline-item:last-child{ border-bottom:none; }
   .tc-timeline-date{ color:var(--graphite); flex-shrink:0; white-space:nowrap; }
   .tc-timeline-text{ font-weight:500; }
   .tc-timeline-add{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
-  .tc-timeline-add input[type="text"]{ flex:1; min-width:140px; font-family:'Times New Roman', Times, serif; font-size:13px; padding:8px 10px; border:1px solid var(--line); border-radius:6px; }
-  .tc-timeline-add input[type="date"]{ font-family:'Times New Roman', Times, serif; font-size:13px; padding:8px 10px; border:1px solid var(--line); border-radius:6px; }
+  .tc-timeline-add input[type="text"]{ flex:1; min-width:140px; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:13px; padding:8px 10px; border:1px solid var(--line); border-radius:6px; }
+  .tc-timeline-add input[type="date"]{ font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:13px; padding:8px 10px; border:1px solid var(--line); border-radius:6px; }
   .tc-main-nav{ display:flex; gap:0; margin-bottom:20px; border:1px solid var(--ink); border-radius:8px; overflow:hidden; flex-shrink:0; }
   #tc-view-clock{ flex:1; min-height:0; display:flex; flex-direction:column; }
   #tc-view-records{ flex:1; min-height:0; display:flex; flex-direction:column; }
   .tc-main-tab{
-    flex:1; font-family:'Times New Roman', Times, serif; font-size:13px; letter-spacing:1px; text-transform:uppercase;
+    flex:1; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase;
     padding:11px 8px; background:#fff; color:var(--ink); border:none; cursor:pointer;
   }
   .tc-main-tab.sel{ background:var(--ink); color:#fff; }
   .tc-task-wrap{ width:100%; text-align:center; margin-top:10px; }
   .tc-task-input{
-    font-family:'Times New Roman', Times, serif;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size:12px;
     padding:6px 14px;
     border:1px solid var(--line);
@@ -385,21 +411,21 @@
   }
 
   #tc-auth-screen{
-    font-family:'Times New Roman', Times, serif;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
     min-height:100vh; display:flex; align-items:center; justify-content:center;
     background:#FFFFFF; padding:24px;
   }
   .tc-auth-card{ width:100%; max-width:360px; text-align:center; }
   .tc-auth-title{ font-size:13px; letter-spacing:2px; text-transform:uppercase; border:2px solid #000; display:inline-block; padding:3px 10px; border-radius:3px; margin-bottom:28px; }
-  .tc-auth-card input{ width:100%; font-family:'Times New Roman', Times, serif; font-size:14px; padding:11px 14px; border:1px solid #CCC; border-radius:8px; margin-bottom:10px; box-sizing:border-box; }
-  .tc-auth-card button{ width:100%; font-family:'Times New Roman', Times, serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; padding:12px; border:none; border-radius:8px; background:#000; color:#fff; cursor:pointer; margin-top:6px; }
+  .tc-auth-card input{ width:100%; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:14px; padding:11px 14px; border:1px solid #CCC; border-radius:8px; margin-bottom:10px; box-sizing:border-box; }
+  .tc-auth-card button{ width:100%; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; padding:12px; border:none; border-radius:8px; background:#000; color:#fff; cursor:pointer; margin-top:6px; }
   .tc-auth-error{ font-size:12px; min-height:16px; margin-top:8px; }
   .tc-auth-forgot{ text-align:right; font-size:11px; color:#555; text-decoration:underline; cursor:pointer; margin:-2px 0 10px; }
   .tc-auth-toggle{ font-size:12px; color:#555; margin-top:18px; }
   .tc-auth-toggle span{ text-decoration:underline; cursor:pointer; color:#000; }
   .tc-signout-row{ display:flex; justify-content:flex-end; margin-bottom:12px; flex-shrink:0; }
   #tc-signout-btn{
-    font-family:'Times New Roman', Times, serif; font-size:10px; letter-spacing:0.5px; text-transform:uppercase;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:10px; letter-spacing:0.5px; text-transform:uppercase;
     background:#fff; border:1px solid var(--line); border-radius:14px; padding:5px 12px; cursor:pointer; color:var(--graphite);
   }
 </style>
@@ -542,6 +568,7 @@
   var todayEvents = [];
   var tickHandle = null;
   var calMonth = new Date(); calMonth.setDate(1); calMonth.setHours(0,0,0,0);
+  var reportView = { period: 'weekly', anchor: new Date() };
   var selectedDateKey = null;
   var dataDates = new Set();
 
@@ -1402,78 +1429,364 @@
     panel.appendChild(addRow);
   }
 
-  async function renderWeek(){
-    var panel = document.getElementById('tc-panel-week');
-    panel.innerHTML = '<div class="tc-empty">Loading…</div>';
-    var totals = {};
-    var grandTotal = 0;
-    var longestShift = 0;
-    var deepWorkSessions = 0;
-    var daysWithEntries = 0;
-    for (var i = 0; i < 7; i++) {
-      var d = new Date(); d.setDate(d.getDate() - i);
-      var key = dateKey(d);
-      var raw = (key === todayStr()) ? JSON.stringify({entries: todayEntries}) : await safeGet('day:'+key, false);
-      if (!raw) continue;
-      try {
-        var day = JSON.parse(raw);
-        var entries = day.entries || [];
-        if (entries.length) daysWithEntries++;
-        entries.forEach(function(e){
-          totals[e.category] = (totals[e.category] || 0) + e.minutes;
-          grandTotal += e.minutes;
-          if (e.minutes > longestShift) longestShift = e.minutes;
-          if (e.minutes >= 25) deepWorkSessions++;
-        });
-      } catch(e){}
-    }
-    panel.innerHTML = '';
-    if (!grandTotal) {
-      panel.innerHTML = '<div class="tc-empty">No shifts logged in the past 7 days yet.</div>';
+  function startOfWeekMon(d){ var x = new Date(d); var day = (x.getDay()+6)%7; x.setDate(x.getDate()-day); x.setHours(0,0,0,0); return x; }
+  function addDaysD(d, n){ var x = new Date(d); x.setDate(x.getDate()+n); return x; }
+  function startOfMonthD(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
+  function daysInMonthOf(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0).getDate(); }
+  function startOfQuarterD(d){ var q = Math.floor(d.getMonth()/3); return new Date(d.getFullYear(), q*3, 1); }
+  function isLeapYear(y){ return (y%4===0 && y%100!==0) || y%400===0; }
+  function fmtHoursShort(mins){ return Math.round(mins/60) + 'h'; }
+  var DOW_ABBR = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+
+  async function fetchEntriesInRange(startKey, endKeyInclusive){
+    var keys = [];
+    var cur = new Date(startKey + 'T00:00:00');
+    var end = new Date(endKeyInclusive + 'T00:00:00');
+    while (cur <= end) { keys.push(dateKey(cur)); cur.setDate(cur.getDate()+1); }
+    var results = await Promise.all(keys.map(async function(k){
+      if (k === todayStr()) return { date: k, entries: todayEntries };
+      if (!dataDates.has(k)) return { date: k, entries: [] };
+      var raw = await safeGet('day:'+k, false);
+      var entries = [];
+      if (raw) { try { entries = JSON.parse(raw).entries || []; } catch(e){} }
+      return { date: k, entries: entries };
+    }));
+    results.sort(function(a,b){ return a.date.localeCompare(b.date); });
+    return results;
+  }
+
+  function buildReportShell(panel){
+    var subtabs = document.createElement('div');
+    subtabs.className = 'tc-report-subtabs';
+    [['weekly','Weekly'],['monthly','Monthly'],['quarterly','Quarterly'],['yearly','Yearly']].forEach(function(p){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tc-report-subtab' + (reportView.period === p[0] ? ' sel' : '');
+      btn.textContent = p[1];
+      btn.onclick = function(){ reportView = { period: p[0], anchor: new Date() }; renderWeek(); };
+      subtabs.appendChild(btn);
+    });
+    panel.appendChild(subtabs);
+    var content = document.createElement('div');
+    panel.appendChild(content);
+    return content;
+  }
+
+  function addReportHeading(container, heading, question){
+    var h = document.createElement('div'); h.className = 'tc-report-heading'; h.textContent = heading;
+    var q = document.createElement('div'); q.className = 'tc-report-question'; q.textContent = question;
+    container.appendChild(h); container.appendChild(q);
+  }
+
+  function buildNavRow(container, rangeLabel, onPrev, onNext){
+    var nav = document.createElement('div'); nav.className = 'tc-report-nav';
+    var prev = document.createElement('button'); prev.type = 'button'; prev.textContent = '‹'; prev.onclick = onPrev;
+    var label = document.createElement('div'); label.className = 'tc-report-range'; label.textContent = rangeLabel;
+    var next = document.createElement('button'); next.type = 'button'; next.textContent = '›'; next.onclick = onNext;
+    nav.appendChild(prev); nav.appendChild(label); nav.appendChild(next);
+    container.appendChild(nav);
+  }
+
+  function fmtCompactHM(mins){
+    if (mins <= 0) return '–';
+    var h = Math.floor(mins/60), m = mins%60;
+    return h + 'h' + String(m).padStart(2,'0');
+  }
+  function fmtHM2(mins){
+    var h = Math.floor(mins/60), m = mins%60;
+    if (h > 0) return h + ' hr ' + String(m).padStart(2,'0') + ' min';
+    return m + ' min';
+  }
+  function fmtSignedHours(mins){
+    var h = Math.round(Math.abs(mins)/60);
+    return (mins >= 0 ? '+' : '-') + h + 'h';
+  }
+  function taskLabelOf(e){ return (e.task && e.task.trim()) ? e.task.trim() : e.category; }
+
+  function addPlainList(container, title, totalsObj, limit){
+    var h = document.createElement('div'); h.className = 'tc-report-breakdown-title'; h.textContent = title;
+    container.appendChild(h);
+    var keys = Object.keys(totalsObj).sort(function(a,b){ return totalsObj[b]-totalsObj[a]; });
+    if (limit) keys = keys.slice(0, limit);
+    if (!keys.length) {
+      var empty = document.createElement('div'); empty.className = 'tc-empty'; empty.textContent = 'No time logged yet.';
+      container.appendChild(empty);
       return;
     }
-    var attendancePct = Math.round((daysWithEntries / 7) * 100);
-    var rating = attendancePct >= 85 ? 'Outstanding' : attendancePct >= 60 ? 'Strong' : attendancePct >= 35 ? 'Building' : 'Needs Focus';
-    var lh = Math.floor(longestShift/60), lm = longestShift%60;
-
-    var title = document.createElement('div');
-    title.className = 'tc-report-title';
-    title.textContent = 'Performance Report — Last 7 Days';
-    panel.appendChild(title);
-
-    var reportRows = [
-      ['Hours Worked', (grandTotal/60).toFixed(1) + ' hrs'],
-      ['Attendance', daysWithEntries + ' of 7 days (' + attendancePct + '%)'],
-      ['Longest Shift', lh + 'h ' + lm + 'm'],
-      ['Deep Work Sessions', deepWorkSessions],
-      ['Consistency Rating', rating]
-    ];
-    reportRows.forEach(function(r){
-      var row = document.createElement('div');
-      row.className = 'tc-report-row';
-      row.innerHTML = '<span class="tc-report-label">'+r[0]+'</span><span class="tc-report-value">'+r[1]+'</span>';
-      panel.appendChild(row);
-    });
-
-    var byCatTitle = document.createElement('div');
-    byCatTitle.className = 'tc-report-title';
-    byCatTitle.style.marginTop = '20px';
-    byCatTitle.textContent = 'Hours by Category';
-    panel.appendChild(byCatTitle);
-
-    var cats = Object.keys(totals).sort(function(a,b){ return totals[b]-totals[a]; });
-    var max = Math.max.apply(null, cats.map(function(c){ return totals[c]; }));
-    cats.forEach(function(c){
-      var mins = totals[c];
-      var hrs = (mins/60).toFixed(1);
-      var pct = Math.round((mins/max)*100);
-      var row = document.createElement('div');
-      row.className = 'tc-bar-row';
-      row.innerHTML = '<div class="tc-bar-label"><span>'+c+'</span><span>'+hrs+' hr</span></div>'+
-        '<div class="tc-bar-track"><div class="tc-bar-fill" style="width:'+pct+'%; background:'+categoryColorByName(c)+'"></div></div>';
-      panel.appendChild(row);
+    keys.forEach(function(k){
+      var row = document.createElement('div'); row.className = 'tc-report-plain-row';
+      row.innerHTML = '<span>'+k+'</span><span>'+fmtHM2(totalsObj[k])+'</span>';
+      container.appendChild(row);
     });
   }
+
+  function addBreakdown(container, title, catTotals, grand, limit){
+    var h = document.createElement('div'); h.className = 'tc-report-breakdown-title'; h.textContent = title;
+    container.appendChild(h);
+    var cats = Object.keys(catTotals).sort(function(a,b){ return catTotals[b]-catTotals[a]; });
+    if (limit) cats = cats.slice(0, limit);
+    cats.forEach(function(c){
+      var pct = grand > 0 ? Math.round((catTotals[c]/grand)*100) : 0;
+      var row = document.createElement('div'); row.className = 'tc-report-breakdown-row';
+      row.innerHTML = '<div class="tc-report-breakdown-label"><span>'+c+'</span><span>'+fmtHoursShort(catTotals[c])+' · '+pct+'%</span></div>'+
+        '<div class="tc-report-breakdown-track"><div class="tc-report-breakdown-fill" style="width:'+pct+'%;background:'+categoryColorByName(c)+'"></div></div>';
+      container.appendChild(row);
+    });
+    if (!cats.length) {
+      var empty = document.createElement('div'); empty.className = 'tc-empty'; empty.textContent = 'No time logged yet.';
+      container.appendChild(empty);
+    }
+  }
+
+  async function renderPulseWeek(content){
+    var start = startOfWeekMon(reportView.anchor);
+    var end = addDaysD(start, 6);
+    content.innerHTML = '';
+    addReportHeading(content, 'Pulse', 'How did I spend my days — and what did I actually work on?');
+    var rangeLabel = start.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' – ' + end.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+    buildNavRow(content, rangeLabel,
+      function(){ reportView.anchor = addDaysD(reportView.anchor,-7); renderWeek(); },
+      function(){ reportView.anchor = addDaysD(reportView.anchor,7); renderWeek(); });
+
+    var loading = document.createElement('div'); loading.className = 'tc-empty'; loading.textContent = 'Loading…'; content.appendChild(loading);
+    var days = await fetchEntriesInRange(dateKey(start), dateKey(end));
+    loading.remove();
+
+    var dayTotals = days.map(function(d){ return d.entries.reduce(function(s,e){ return s+e.minutes; }, 0); });
+    var dayTopCat = days.map(function(d){
+      var t = {}; d.entries.forEach(function(e){ t[e.category] = (t[e.category]||0)+e.minutes; });
+      var best=null, bestVal=0;
+      Object.keys(t).forEach(function(c){ if (t[c]>bestVal){ best=c; bestVal=t[c]; } });
+      return best;
+    });
+    var maxMin = Math.max.apply(null, dayTotals.concat([1]));
+
+    var chart = document.createElement('div'); chart.className = 'tc-report-barchart';
+    days.forEach(function(d, i){
+      var col = document.createElement('div'); col.className = 'tc-report-bar-col';
+      var val = document.createElement('div'); val.className = 'tc-report-bar-val';
+      val.textContent = fmtCompactHM(dayTotals[i]);
+      var bar = document.createElement('div'); bar.className = 'tc-report-bar';
+      bar.style.height = Math.max(2, Math.round((dayTotals[i]/maxMin)*90)) + 'px';
+      bar.style.background = dayTopCat[i] ? categoryColorByName(dayTopCat[i]) : 'var(--line)';
+      var lbl = document.createElement('div'); lbl.className = 'tc-report-bar-label'; lbl.textContent = DOW_ABBR[i];
+      col.appendChild(val); col.appendChild(bar); col.appendChild(lbl);
+      chart.appendChild(col);
+    });
+    content.appendChild(chart);
+
+    var catTotals = {}, taskTotals = {};
+    days.forEach(function(d){
+      d.entries.forEach(function(e){
+        catTotals[e.category] = (catTotals[e.category]||0) + e.minutes;
+        var tk = taskLabelOf(e);
+        taskTotals[tk] = (taskTotals[tk]||0) + e.minutes;
+      });
+    });
+    addPlainList(content, 'By Category', catTotals);
+    addPlainList(content, 'By Task', taskTotals);
+  }
+
+  async function renderPatternMonth(content){
+    var anchor = reportView.anchor;
+    var start = startOfMonthD(anchor);
+    var totalDays = daysInMonthOf(anchor);
+    var end = addDaysD(start, totalDays-1);
+    content.innerHTML = '';
+    addReportHeading(content, 'Pattern', 'What categories dominate — and which tasks create that pattern?');
+    var rangeLabel = start.toLocaleDateString(undefined,{month:'long',year:'numeric'}).toUpperCase();
+    buildNavRow(content, rangeLabel,
+      function(){ reportView.anchor = new Date(anchor.getFullYear(), anchor.getMonth()-1, 1); renderWeek(); },
+      function(){ reportView.anchor = new Date(anchor.getFullYear(), anchor.getMonth()+1, 1); renderWeek(); });
+
+    var loading = document.createElement('div'); loading.className='tc-empty'; loading.textContent='Loading…'; content.appendChild(loading);
+    var days = await fetchEntriesInRange(dateKey(start), dateKey(end));
+    loading.remove();
+
+    var grid = document.createElement('div'); grid.className = 'tc-report-heatmap';
+    var startOffset = (start.getDay()+6)%7;
+    for (var i=0; i<startOffset; i++) { grid.appendChild(document.createElement('div')); }
+    var catTotals={}, taskTotals={}, grand=0, activeDays=0;
+    days.forEach(function(d, idx){
+      var dayCats = {};
+      d.entries.forEach(function(e){
+        dayCats[e.category]=(dayCats[e.category]||0)+e.minutes;
+        catTotals[e.category]=(catTotals[e.category]||0)+e.minutes;
+        var tk = taskLabelOf(e);
+        taskTotals[tk]=(taskTotals[tk]||0)+e.minutes;
+      });
+      var dayTotal = d.entries.reduce(function(s,e){ return s+e.minutes; }, 0);
+      if (dayTotal>0) activeDays++;
+      grand += dayTotal;
+      var topCat=null, topVal=0;
+      Object.keys(dayCats).forEach(function(c){ if (dayCats[c]>topVal){ topCat=c; topVal=dayCats[c]; } });
+      var cell = document.createElement('div'); cell.className = 'tc-report-heat-cell';
+      cell.textContent = idx+1;
+      if (topCat) cell.style.background = categoryColorByName(topCat);
+      grid.appendChild(cell);
+    });
+    content.appendChild(grid);
+
+    var hero = document.createElement('div'); hero.className = 'tc-summary-hero'; hero.textContent = fmtHoursMinutes(grand);
+    content.appendChild(hero);
+    var cap = document.createElement('div'); cap.className = 'tc-daily-caption'; cap.textContent = 'total recorded time';
+    content.appendChild(cap);
+
+    var line1 = document.createElement('div'); line1.className = 'tc-report-plainstat';
+    line1.textContent = activeDays + ' / ' + totalDays + ' active days';
+    content.appendChild(line1);
+    var line2 = document.createElement('div'); line2.className = 'tc-report-plainstat';
+    line2.textContent = (activeDays>0 ? fmtHoursMinutes(Math.round(grand/activeDays)) : '0 min') + ' average active day';
+    content.appendChild(line2);
+
+    addBreakdown(content, 'Category Allocation', catTotals, grand);
+    addBreakdown(content, 'Top Tasks', taskTotals, grand, 5);
+  }
+
+  function quarterMonths(anchor){
+    var qStart = startOfQuarterD(anchor);
+    return [0,1,2].map(function(i){ return new Date(qStart.getFullYear(), qStart.getMonth()+i, 1); });
+  }
+
+  async function renderDirectionQuarter(content){
+    var months = quarterMonths(reportView.anchor);
+    content.innerHTML = '';
+    addReportHeading(content, 'Direction', 'Which areas are gaining time — and which specific tasks are driving the shift?');
+    var qNum = Math.floor(months[0].getMonth()/3)+1;
+    var rangeLabel = 'Q'+qNum+' — '+months[0].toLocaleDateString(undefined,{month:'long'}).toUpperCase()+' TO '+months[2].toLocaleDateString(undefined,{month:'long',year:'numeric'}).toUpperCase();
+    buildNavRow(content, rangeLabel,
+      function(){ reportView.anchor = new Date(reportView.anchor.getFullYear(), reportView.anchor.getMonth()-3, 1); renderWeek(); },
+      function(){ reportView.anchor = new Date(reportView.anchor.getFullYear(), reportView.anchor.getMonth()+3, 1); renderWeek(); });
+
+    var loading = document.createElement('div'); loading.className='tc-empty'; loading.textContent='Loading…'; content.appendChild(loading);
+    var monthEntries = [[],[],[]];
+    for (var mi=0; mi<3; mi++) {
+      var mStart = months[mi];
+      var mEnd = addDaysD(new Date(mStart.getFullYear(), mStart.getMonth()+1, 1), -1);
+      var days = await fetchEntriesInRange(dateKey(mStart), dateKey(mEnd));
+      days.forEach(function(d){ monthEntries[mi] = monthEntries[mi].concat(d.entries); });
+    }
+    loading.remove();
+
+    function catTotalsFor(mi){
+      var t = {}; monthEntries[mi].forEach(function(e){ t[e.category]=(t[e.category]||0)+e.minutes; }); return t;
+    }
+    function taskTotalsFor(mi, onlyCat){
+      var t = {};
+      monthEntries[mi].forEach(function(e){
+        if (onlyCat && e.category !== onlyCat) return;
+        var k = taskLabelOf(e);
+        t[k] = (t[k]||0) + e.minutes;
+      });
+      return t;
+    }
+    var cat0 = catTotalsFor(0), cat1 = catTotalsFor(1), cat2 = catTotalsFor(2);
+    var allCats = {};
+    Object.keys(cat0).concat(Object.keys(cat1), Object.keys(cat2)).forEach(function(c){ allCats[c]=true; });
+    var catShift = Object.keys(allCats).map(function(c){
+      var v0=cat0[c]||0, v1=cat1[c]||0, v2=cat2[c]||0;
+      return { name:c, v0:v0, v1:v1, v2:v2, delta:v2-v0 };
+    }).sort(function(a,b){ return b.delta-a.delta; });
+
+    var shiftTitle = document.createElement('div'); shiftTitle.className = 'tc-report-breakdown-title'; shiftTitle.textContent = 'Category Shift';
+    content.appendChild(shiftTitle);
+    if (!catShift.length) {
+      var e0 = document.createElement('div'); e0.className='tc-empty'; e0.textContent='No time logged this quarter.'; content.appendChild(e0);
+    }
+    catShift.forEach(function(c){
+      var row = document.createElement('div'); row.className = 'tc-report-shift-row';
+      row.innerHTML = '<span class="tc-report-shift-name">'+c.name+'</span>'+
+        '<span class="tc-report-shift-trail">'+fmtHoursShort(c.v0)+' → '+fmtHoursShort(c.v1)+' → '+fmtHoursShort(c.v2)+'&nbsp;&nbsp;<b>'+fmtSignedHours(c.delta)+'</b></span>';
+      content.appendChild(row);
+    });
+
+    var task0 = taskTotalsFor(0), task2 = taskTotalsFor(2);
+    var allTasks = {};
+    Object.keys(task0).concat(Object.keys(task2)).forEach(function(t){ allTasks[t]=true; });
+    var taskShift = Object.keys(allTasks).map(function(t){
+      return { name:t, delta:(task2[t]||0)-(task0[t]||0) };
+    }).filter(function(t){ return t.delta !== 0; })
+      .sort(function(a,b){ return b.delta-a.delta; })
+      .slice(0, 5);
+
+    var tasksTitle = document.createElement('div'); tasksTitle.className = 'tc-report-breakdown-title'; tasksTitle.style.marginTop='18px'; tasksTitle.textContent = 'Tasks Driving the Shift';
+    content.appendChild(tasksTitle);
+    if (!taskShift.length) {
+      var e1 = document.createElement('div'); e1.className='tc-empty'; e1.textContent='Not enough data yet.'; content.appendChild(e1);
+    }
+    taskShift.forEach(function(t){
+      var row = document.createElement('div'); row.className = 'tc-report-plain-row';
+      row.innerHTML = '<span>'+t.name+'</span><span>'+fmtSignedHours(t.delta)+'</span>';
+      content.appendChild(row);
+    });
+
+    if (catShift.length) {
+      var biggest = catShift[0];
+      Math.abs(catShift[catShift.length-1].delta) > Math.abs(biggest.delta) && (biggest = catShift[catShift.length-1]);
+      var t0Scoped = taskTotalsFor(0, biggest.name), t2Scoped = taskTotalsFor(2, biggest.name);
+      var scopedTasks = {};
+      Object.keys(t0Scoped).concat(Object.keys(t2Scoped)).forEach(function(t){ scopedTasks[t]=true; });
+      var leadTask=null, leadDelta=0;
+      Object.keys(scopedTasks).forEach(function(t){
+        var d = (t2Scoped[t]||0) - (t0Scoped[t]||0);
+        if (Math.abs(d) > Math.abs(leadDelta)) { leadDelta = d; leadTask = t; }
+      });
+      var storyTitle = document.createElement('div'); storyTitle.className = 'tc-report-breakdown-title'; storyTitle.style.marginTop='18px'; storyTitle.textContent = 'Biggest Quarterly Story';
+      content.appendChild(storyTitle);
+      var story = document.createElement('div'); story.className = 'tc-report-callout';
+      var verb = biggest.delta >= 0 ? 'gained' : 'lost';
+      var storyText = biggest.name + ' ' + verb + ' ' + Math.round(Math.abs(biggest.delta)/60) + ' hours' +
+        (leadTask ? ', led primarily by ' + leadTask + ' (' + fmtSignedHours(leadDelta) + ').' : '.');
+      story.innerHTML = '<div class="tc-report-callout-value">'+storyText+'</div>';
+      content.appendChild(story);
+    }
+  }
+
+  async function renderReflectionYear(content){
+    var year = reportView.anchor.getFullYear();
+    content.innerHTML = '';
+    addReportHeading(content, 'Reflection', 'What areas received my year — and what did I actually spend my life doing?');
+    buildNavRow(content, String(year),
+      function(){ reportView.anchor = new Date(year-1, 0, 1); renderWeek(); },
+      function(){ reportView.anchor = new Date(year+1, 0, 1); renderWeek(); });
+
+    var loading = document.createElement('div'); loading.className='tc-empty'; loading.textContent='Loading… this can take a moment for a full year.'; content.appendChild(loading);
+    var start = new Date(year,0,1), end = new Date(year,11,31);
+    var days = await fetchEntriesInRange(dateKey(start), dateKey(end));
+    loading.remove();
+
+    var catTotals={}, taskTotals={}, grand=0;
+    days.forEach(function(d){
+      d.entries.forEach(function(e){
+        catTotals[e.category]=(catTotals[e.category]||0)+e.minutes;
+        var tk = taskLabelOf(e);
+        taskTotals[tk]=(taskTotals[tk]||0)+e.minutes;
+        grand += e.minutes;
+      });
+    });
+
+    var hoursRecorded = Math.round(grand/60);
+    var hero = document.createElement('div'); hero.className = 'tc-summary-hero'; hero.textContent = hoursRecorded.toLocaleString() + ' hours recorded';
+    content.appendChild(hero);
+
+    addPlainList(content, 'Top Categories — Areas of Life', catTotals, 4);
+    addPlainList(content, 'Top Tasks — What You Actually Did', taskTotals, 4);
+
+    var caption = document.createElement('div'); caption.className = 'tc-report-caption'; caption.style.marginTop = '16px';
+    caption.textContent = 'The yearly report should preserve both truths: the category tells the life area; the task tells the lived activity.';
+    content.appendChild(caption);
+  }
+
+  async function renderWeek(){
+    var panel = document.getElementById('tc-panel-week');
+    panel.innerHTML = '';
+    var content = buildReportShell(panel);
+    if (reportView.period === 'weekly') await renderPulseWeek(content);
+    else if (reportView.period === 'monthly') await renderPatternMonth(content);
+    else if (reportView.period === 'quarterly') await renderDirectionQuarter(content);
+    else await renderReflectionYear(content);
+  }
+
 
   function setMainTab(which){
     var clockTab = document.getElementById('tc-main-tab-clock');
